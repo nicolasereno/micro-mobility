@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {IntegratedMap} from './map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
@@ -14,7 +14,7 @@ import {MatButton} from '@angular/material/button';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
 
   private store = inject(Store);
   protected bicycleVisible = this.store.selectSignal<boolean>(bicycleVisible);
@@ -23,19 +23,29 @@ export class App {
   protected dottVisible = this.store.selectSignal<boolean>(operatorVisible('dott'));
   protected birdVisible = this.store.selectSignal<boolean>(operatorVisible('bird'));
 
-  zoomToPosition() {
+  ngOnInit() {
+    this.reloadData();
+  }
+
+  protected reloadData() {
+    this.store.dispatch(VehiclesActions.loadVehicles({operator: 'dott'}));
+    this.store.dispatch(VehiclesActions.loadVehicles({operator: 'lime'}));
+    this.store.dispatch(VehiclesActions.loadVehicles({operator: 'bird'}));
+  }
+
+  protected zoomToPosition() {
     this.store.dispatch(MapsActions.zoomToPosition());
   }
 
-  toggleScooter() {
+  protected toggleScooter() {
     this.store.dispatch(MapsActions.toggleScooter());
   }
 
-  toggleBicycle() {
+  protected toggleBicycle() {
     this.store.dispatch(MapsActions.toggleBicycle())
   }
 
-  toggleOperator(operator: SharingOperator) {
+  protected toggleOperator(operator: SharingOperator) {
     this.store.dispatch(VehiclesActions.toggleOperator({operator}))
   }
 }

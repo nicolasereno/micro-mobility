@@ -84,9 +84,6 @@ export class IntegratedMap implements OnInit {
     }))
 
     this.store.dispatch(MapsActions.zoomToPosition());
-    this.store.dispatch(VehiclesActions.loadVehicles({operator: 'dott'}));
-    this.store.dispatch(VehiclesActions.loadVehicles({operator: 'lime'}));
-    this.store.dispatch(VehiclesActions.loadVehicles({operator: 'bird'}));
   }
 
   private styleForElement(operator: SharingOperator, vehicleType: VehicleType, chargePercentage: number) {

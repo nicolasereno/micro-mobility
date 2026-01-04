@@ -9,6 +9,12 @@ app-root {
   right: 0.5em;
 }
 
+.reloadData {
+  position: absolute;
+  top: 0.5em;
+  left: 0.5em;
+}
+
 .toggleVehicleTypes {
   position: absolute;
   top: 0.5em;

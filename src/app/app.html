@@ -1,8 +1,31 @@
 <app-integrated-map/>
-<button class="zoomToPosition" (click)="zoomToPosition()"></button>
-<button class="toggleScooter" (click)="toggleScooter()" [class.active]="scooterVisible()"><img src="/icons/scooter.svg" width="20" height="20"></button>
-<button class="toggleBicycle" (click)="toggleBicycle()" [class.active]="bicycleVisible()"><img src="/icons/bicycle.svg" width="20" height="20"></button>
 
-<button class="toggleLime" (click)="toggleOperator('lime')" [class.operator]="limeVisible()">lime</button>
-<button class="toggleBird" (click)="toggleOperator('bird')" [class.operator]="birdVisible()">bird</button>
-<button class="toggleDott" (click)="toggleOperator('dott')" [class.operator]="dottVisible()">dott</button>
+<button class="zoomToPosition" matButton="outlined" (click)="zoomToPosition()">Center Map</button>
+
+<mat-button-toggle-group
+  class="toggleVehicleTypes"
+  name="vehicleTypes"
+  aria-label="Vehicle Types"
+  hideMultipleSelectionIndicator="true"
+  multiple
+>
+  <mat-button-toggle value="scooter" (click)="toggleScooter()" checked>
+    Scooter
+  </mat-button-toggle>
+  <mat-button-toggle value="bicycle" (click)="toggleBicycle()" checked>
+    Bicycle
+  </mat-button-toggle>
+</mat-button-toggle-group>
+
+
+<mat-button-toggle-group
+  class="toggleOperator"
+  name="operators"
+  aria-label="Operators"
+  hideMultipleSelectionIndicator="true"
+  multiple
+>
+  <mat-button-toggle value="lime" (click)="toggleOperator('lime')" checked>Lime</mat-button-toggle>
+  <mat-button-toggle value="eggs" (click)="toggleOperator('bird')" checked>Bird</mat-button-toggle>
+  <mat-button-toggle value="sugar" (click)="toggleOperator('dott')" checked>Dott</mat-button-toggle>
+</mat-button-toggle-group>

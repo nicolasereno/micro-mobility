@@ -3,55 +3,20 @@ app-root {
   height: 100vh;
 }
 
-.zoomToPosition, .toggleBicycle, .toggleScooter, .toggleLime, .toggleBird, .toggleDott {
-  position: absolute;
-  border-radius: 2px 2px 0 0;
-  width: 3em;
-  height: 3em;
-}
-
-.toggleLime, .toggleBird, .toggleDott {
-  left: .5em;
-  color: white;
-}
-
-.zoomToPosition, .toggleBicycle, .toggleScooter {
-  background-color: red;
-  right: .5em;
-}
-
-.active {
-  background-color: green !important;
-}
-
 .zoomToPosition {
-  top: .5em;
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.5em;
 }
 
-.toggleScooter {
-  top: 4em;
+.toggleVehicleTypes {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
 }
 
-.toggleBicycle {
-  top: 7.5em;
+.toggleOperator {
+  position: absolute;
+  left: 0.5em;
+  bottom: 0.5em;
 }
-
-.toggleLime {
-  background-color: #08DE08;
-  bottom: .5em;
-}
-
-.toggleBird {
-  background-color: #2DCFF1;
-  bottom: 4em;
-}
-
-.toggleDott {
-  background-color: #E0120A;
-  bottom: 7.5em;
-}
-
-.operator {
-  color: black !important;
-}
-

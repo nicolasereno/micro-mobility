@@ -73,6 +73,7 @@ export class IntegratedMap implements OnInit {
     const map = new Map({
       target: 'map',
       view: this.view,
+      controls: [],
     });
     const layer = new MapboxVectorLayer({
       styleUrl: 'openstreetmap.json',
@@ -80,7 +81,7 @@ export class IntegratedMap implements OnInit {
     map.addLayer(layer);
     map.addLayer(new VectorLayer({
       source: this.vectorSource,
-    }),)
+    }))
 
     this.store.dispatch(MapsActions.zoomToPosition());
     this.store.dispatch(VehiclesActions.loadVehicles({operator: 'dott'}));
@@ -104,7 +105,7 @@ export class IntegratedMap implements OnInit {
       new Style({
         image: new Icon({
           src: `/icons/${vehicleType}.svg`,
-          scale: 0.5,
+          scale: 0.6,
           anchor: [0.5, 0.5],
           anchorXUnits: 'fraction',
           anchorYUnits: 'fraction',
@@ -125,7 +126,7 @@ export class IntegratedMap implements OnInit {
     return new Style({
       image: new Icon({
         src: this.svgToDataUrl(svg),
-        scale: 0.7,
+        scale: 1,
         anchor: [0.5, 0.5],
       }),
     });

@@ -3,16 +3,16 @@ import {Feature, View} from 'ol';
 import {MapboxVectorLayer} from 'ol-mapbox-style';
 import Map from 'ol/Map';
 import {Store} from '@ngrx/store';
-import {VehiclesActions} from '../actions/vehicles.actions';
 import {allVehicles, bicycleVisible, mapCenter, mapZoom, operatorVisible, scooterVisible} from '../reducers';
 import {SharingOperator, Vehicle, VehicleType} from '../model/model';
-import {Icon, Style} from 'ol/style';
+import {Fill, Icon, Stroke, Style} from 'ol/style';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import {Geometry, Point} from 'ol/geom';
 import {MapsActions} from '../actions/maps.actions';
 import {Coordinate} from 'ol/coordinate';
 import {initialState} from '../reducers/maps.reducer';
+import CircleStyle from 'ol/style/Circle';
 
 
 @Component({
@@ -23,7 +23,8 @@ import {initialState} from '../reducers/maps.reducer';
 })
 export class IntegratedMap implements OnInit {
 
-  private readonly vectorSource = new VectorSource();
+  private readonly vehiclesVectorSource = new VectorSource();
+  private readonly positionVectorSource = new VectorSource();
 
   private store = inject(Store)
 
@@ -44,15 +45,34 @@ export class IntegratedMap implements OnInit {
       center: initialState.center
     });
     effect(() => {
-      this.vectorSource.clear();
-      this.vectorSource.addFeatures(this.toFeatures(this.vehicles().dott.filter(v => this.dottVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
-      this.vectorSource.addFeatures(this.toFeatures(this.vehicles().lime.filter(v => this.limeVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
-      this.vectorSource.addFeatures(this.toFeatures(this.vehicles().bird.filter(v => this.birdVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
+      this.vehiclesVectorSource.clear();
+      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().dott.filter(v => this.dottVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
+      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().lime.filter(v => this.limeVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
+      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().bird.filter(v => this.birdVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
     });
     effect(() => {
       this.view.setZoom(this.zoom());
       this.view.setCenter([this.center()[0], this.center()[1]]);
-    });
+      this.positionVectorSource.clear();
+      const feature = new Feature({
+        geometry: new Point(
+          this.center()
+        )
+      });
+      feature.setStyle(new Style({
+        image: new CircleStyle({
+          radius: 6,
+          fill: new Fill({
+            color: 'rgba(0, 153, 255, 0.6)',
+          }),
+          stroke: new Stroke({
+            color: '#0099ff',
+            width: 1,
+          })
+        }),
+      }));
+      this.positionVectorSource.addFeature(feature);
+    })
   }
 
   private toFeatures(vv: Vehicle[]): Feature<Geometry>[] {
@@ -80,9 +100,11 @@ export class IntegratedMap implements OnInit {
     });
     map.addLayer(layer);
     map.addLayer(new VectorLayer({
-      source: this.vectorSource,
-    }))
-
+      source: this.vehiclesVectorSource,
+    }));
+    map.addLayer(new VectorLayer({
+      source: this.positionVectorSource,
+    }));
     this.store.dispatch(MapsActions.zoomToPosition());
   }
 

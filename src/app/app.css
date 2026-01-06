@@ -26,3 +26,19 @@ app-root {
   left: 0.5em;
   bottom: 0.5em;
 }
+
+.slider-wrapper {
+  position: absolute;
+  top: 8em;
+  left: -2.5em;
+}
+
+.slider-wrapper mat-slider {
+  transform: rotate(-90deg);
+}
+
+h3 {
+  position: absolute;
+  top: 11em;
+  left: 1em;
+}

@@ -2,15 +2,16 @@ import {Component, inject, OnInit} from '@angular/core';
 import {IntegratedMap} from './map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
-import {bicycleVisible, operatorVisible, scooterVisible} from './reducers';
+import {bicycleVisible, minimumCharge, operatorVisible, scooterVisible} from './reducers';
 import {SharingOperator} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatButton} from '@angular/material/button';
+import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 
 @Component({
   selector: 'app-root',
-  imports: [IntegratedMap, MatButtonToggleGroup, MatButtonToggle, MatButton],
+  imports: [IntegratedMap, MatButtonToggleGroup, MatButtonToggle, MatButton, MatSlider, MatSliderThumb],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -22,6 +23,7 @@ export class App implements OnInit {
   protected limeVisible = this.store.selectSignal<boolean>(operatorVisible('lime'));
   protected dottVisible = this.store.selectSignal<boolean>(operatorVisible('dott'));
   protected birdVisible = this.store.selectSignal<boolean>(operatorVisible('bird'));
+  protected minimumCharge = this.store.selectSignal<number>(minimumCharge);
 
   ngOnInit() {
     this.reloadData();
@@ -47,5 +49,9 @@ export class App implements OnInit {
 
   protected toggleOperator(operator: SharingOperator) {
     this.store.dispatch(VehiclesActions.toggleOperator({operator}))
+  }
+
+  filterMinimumCharge(minimumCharge: number) {
+    this.store.dispatch(MapsActions.minimumCharge({minimumCharge}));
   }
 }

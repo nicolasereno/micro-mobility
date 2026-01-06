@@ -10,6 +10,7 @@ export interface MapsState {
   zoom: number;
   bicycleVisible: boolean;
   scooterVisible: boolean;
+  minimumCharge: number;
 }
 
 export const initialState: MapsState = {
@@ -17,6 +18,7 @@ export const initialState: MapsState = {
   zoom: 12,
   bicycleVisible: true,
   scooterVisible: true,
+  minimumCharge: 10
 };
 
 export const mapsReducer = createReducer(
@@ -33,6 +35,10 @@ export const mapsReducer = createReducer(
   on(MapsActions.toggleScooter, (state, {}) => ({
     ...state,
     scooterVisible: !state.scooterVisible,
+  })),
+  on(MapsActions.minimumCharge, (state, {minimumCharge}) => ({
+    ...state,
+    minimumCharge: minimumCharge,
   }))
 );
 

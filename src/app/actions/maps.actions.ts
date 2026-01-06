@@ -10,5 +10,6 @@ export const MapsActions = createActionGroup({
     'Zoom To Position Failure': emptyProps(),
     'Toggle Bicycle': emptyProps(),
     'Toggle Scooter': emptyProps(),
+    'Minimum Charge': props<{ minimumCharge: number }>(),
   }
 });

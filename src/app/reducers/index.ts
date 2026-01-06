@@ -20,6 +20,7 @@ export const mapZoom = (state: AppState) => state.maps.zoom;
 export const bicycleVisible = (state: AppState) => state.maps.bicycleVisible;
 export const scooterVisible = (state: AppState) => state.maps.scooterVisible;
 export const operatorsVisible = (state: AppState) => state.vehicles.vehiclesVisible;
+export const minimumCharge = (state: AppState) => state.maps.minimumCharge;
 
 export const operatorVisible = (operator: SharingOperator) =>
   createSelector(

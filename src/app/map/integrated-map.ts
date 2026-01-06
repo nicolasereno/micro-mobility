@@ -3,7 +3,15 @@ import {Feature, View} from 'ol';
 import {MapboxVectorLayer} from 'ol-mapbox-style';
 import Map from 'ol/Map';
 import {Store} from '@ngrx/store';
-import {allVehicles, bicycleVisible, mapCenter, mapZoom, operatorVisible, scooterVisible} from '../reducers';
+import {
+  allVehicles,
+  bicycleVisible,
+  mapCenter,
+  mapZoom,
+  minimumCharge,
+  operatorVisible,
+  scooterVisible
+} from '../reducers';
 import {SharingOperator, Vehicle, VehicleType} from '../model/model';
 import {Fill, Icon, Stroke, Style} from 'ol/style';
 import VectorSource from 'ol/source/Vector';
@@ -13,6 +21,7 @@ import {MapsActions} from '../actions/maps.actions';
 import {Coordinate} from 'ol/coordinate';
 import {initialState} from '../reducers/maps.reducer';
 import CircleStyle from 'ol/style/Circle';
+import {FeatureLike} from 'ol/Feature';
 
 
 @Component({
@@ -36,6 +45,7 @@ export class IntegratedMap implements OnInit {
   private limeVisible = this.store.selectSignal<boolean>(operatorVisible('lime'));
   private dottVisible = this.store.selectSignal<boolean>(operatorVisible('dott'));
   private birdVisible = this.store.selectSignal<boolean>(operatorVisible('bird'));
+  private minimumCharge = this.store.selectSignal<number>(minimumCharge);
 
   private readonly view: View;
 
@@ -46,9 +56,9 @@ export class IntegratedMap implements OnInit {
     });
     effect(() => {
       this.vehiclesVectorSource.clear();
-      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().dott.filter(v => this.dottVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
-      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().lime.filter(v => this.limeVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
-      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().bird.filter(v => this.birdVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
+      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().dott.filter(v => this.minimumCharge() <= v.percentageCharge).filter(v => this.dottVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
+      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().lime.filter(v => this.minimumCharge() <= v.percentageCharge).filter(v => this.limeVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
+      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().bird.filter(v => this.minimumCharge() <= v.percentageCharge).filter(v => this.birdVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
     });
     effect(() => {
       this.view.setZoom(this.zoom());
@@ -63,10 +73,10 @@ export class IntegratedMap implements OnInit {
         image: new CircleStyle({
           radius: 6,
           fill: new Fill({
-            color: 'rgba(0, 153, 255, 0.6)',
+            color: 'rgba(255, 255, 0, 0.6)',
           }),
           stroke: new Stroke({
-            color: '#0099ff',
+            color: '#000000',
             width: 1,
           })
         }),
@@ -82,12 +92,31 @@ export class IntegratedMap implements OnInit {
           v.coordinates
         ),
         vehicleId: v.id,
-        vehicleType: v.vehicleType
+        operator: v.operator,
+        vehicleType: v.vehicleType,
+        percentageCharge: v.percentageCharge
       });
-      feature.setStyle(this.styleForElement(v.operator, v.vehicleType, v.percentageCharge));
+      feature.setStyle((feat: FeatureLike, res: number) => {
+        if (res < 8) {
+          return this.styleForElement(feat.getProperties()['operator'] as SharingOperator, feat.getProperties()['vehicleType'] as VehicleType, feat.getProperties()['percentageCharge'] as number)
+        }
+        return new Style({
+          image: new CircleStyle({
+            radius: 6,
+            fill: new Fill({
+              color: this.fillColors[feat.getProperties()['operator'] as SharingOperator],
+            }),
+            stroke: new Stroke({
+              color: this.borderColors[feat.getProperties()['operator'] as SharingOperator],
+              width: 1,
+            })
+          }),
+        })
+      });
       return feature;
     })
   }
+
 
   ngOnInit(): void {
     const map = new Map({
@@ -108,19 +137,21 @@ export class IntegratedMap implements OnInit {
     this.store.dispatch(MapsActions.zoomToPosition());
   }
 
+  private readonly fillColors: Record<SharingOperator, string> = {
+    lime: '#C0F008',
+    bird: '#CED7E0',
+    dott: '#00A8E9'
+  };
+  private readonly borderColors: Record<SharingOperator, string> = {
+    lime: '#08DE08',
+    bird: '#2DCFF1',
+    dott: '#E0120A'
+  };
+
   private styleForElement(operator: SharingOperator, vehicleType: VehicleType, chargePercentage: number) {
-    const fillColors: Record<SharingOperator, string> = {
-      lime: '#C0F008',
-      bird: '#CED7E0',
-      dott: '#00A8E9'
-    };
-    const borderColors: Record<SharingOperator, string> = {
-      lime: '#08DE08',
-      bird: '#2DCFF1',
-      dott: '#E0120A'
-    };
+
     return [
-      this.createSvgProgressStyle(chargePercentage, fillColors[operator]),
+      this.createSvgProgressStyle(chargePercentage, this.fillColors[operator]),
       new Style({
         image: new Icon({
           src: `/icons/${vehicleType}.svg`,
@@ -128,7 +159,7 @@ export class IntegratedMap implements OnInit {
           anchor: [0.5, 0.5],
           anchorXUnits: 'fraction',
           anchorYUnits: 'fraction',
-          color: borderColors[operator]
+          color: this.borderColors[operator]
         }),
       })];
   }

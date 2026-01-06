@@ -2,7 +2,14 @@
 
 <button class="zoomToPosition" matButton="filled" (click)="zoomToPosition()">Center Map</button>
 
-<button class="reloadData" matButton="filled"   (click)="reloadData()">Reload</button>
+<button class="reloadData" matButton="filled" (click)="reloadData()">Reload</button>
+
+<div class="slider-wrapper">
+  <mat-slider min="0" max="100" step="1">
+    <input value="10" matSliderThumb (valueChange)="filterMinimumCharge($event)">
+  </mat-slider>
+</div>
+<h3>{{ minimumCharge() }} %</h3>
 
 <mat-button-toggle-group
   class="toggleVehicleTypes"

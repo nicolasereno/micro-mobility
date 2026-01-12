@@ -16,6 +16,7 @@ export const reducers: ActionReducerMap<AppState> = {
 
 export const allVehicles = (state: AppState) => state.vehicles.vehicles;
 export const mapCenter = (state: AppState) => state.maps.center;
+export const centerAccuracy = (state: AppState) => state.maps.accuracy;
 export const mapZoom = (state: AppState) => state.maps.zoom;
 export const bicycleVisible = (state: AppState) => state.maps.bicycleVisible;
 export const scooterVisible = (state: AppState) => state.maps.scooterVisible;

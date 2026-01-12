@@ -7,6 +7,7 @@ export const mapsFeatureKey = 'maps';
 
 export interface MapsState {
   center: Coordinate;
+  accuracy: number;
   zoom: number;
   bicycleVisible: boolean;
   scooterVisible: boolean;
@@ -15,6 +16,7 @@ export interface MapsState {
 
 export const initialState: MapsState = {
   center: fromLonLat([12.49637, 41.90278]),
+  accuracy: 0,
   zoom: 12,
   bicycleVisible: true,
   scooterVisible: true,
@@ -23,10 +25,11 @@ export const initialState: MapsState = {
 
 export const mapsReducer = createReducer(
   initialState,
-  on(MapsActions.zoomToPositionSuccess, (state, {coordinates}) => ({
+  on(MapsActions.zoomToPositionSuccess, (state, {coordinates, accuracy}) => ({
     ...state,
     zoom: 18,
     center: coordinates,
+    accuracy: accuracy,
   })),
   on(MapsActions.toggleBicycle, (state, {}) => ({
     ...state,

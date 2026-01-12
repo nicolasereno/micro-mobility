@@ -27,7 +27,8 @@ export class MapsEffects {
         }).pipe(
           map(position =>
             MapsActions.zoomToPositionSuccess({
-              coordinates: fromLonLat([position.coords.longitude, position.coords.latitude])
+              coordinates: fromLonLat([position.coords.longitude, position.coords.latitude]),
+              accuracy: position.coords.accuracy
             })
           ),
           catchError(err =>

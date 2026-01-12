@@ -6,6 +6,7 @@ import {Store} from '@ngrx/store';
 import {
   allVehicles,
   bicycleVisible,
+  centerAccuracy,
   mapCenter,
   mapZoom,
   minimumCharge,
@@ -16,7 +17,7 @@ import {SharingOperator, Vehicle, VehicleType} from '../model/model';
 import {Fill, Icon, Stroke, Style} from 'ol/style';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
-import {Geometry, Point} from 'ol/geom';
+import {Circle, Geometry, Point} from 'ol/geom';
 import {MapsActions} from '../actions/maps.actions';
 import {Coordinate} from 'ol/coordinate';
 import {initialState} from '../reducers/maps.reducer';
@@ -39,6 +40,7 @@ export class IntegratedMap implements OnInit {
 
   private vehicles = this.store.selectSignal<Record<SharingOperator, Vehicle[]>>(allVehicles);
   private center = this.store.selectSignal<Coordinate>(mapCenter);
+  private accuracy = this.store.selectSignal<number>(centerAccuracy);
   private zoom = this.store.selectSignal<number>(mapZoom);
   private bicycleVisible = this.store.selectSignal<boolean>(bicycleVisible);
   private scooterVisible = this.store.selectSignal<boolean>(scooterVisible);
@@ -82,6 +84,17 @@ export class IntegratedMap implements OnInit {
         }),
       }));
       this.positionVectorSource.addFeature(feature);
+      const positionAccuracy = new Feature(new Circle(this.center(), this.accuracy()));
+      positionAccuracy.setStyle(new Style({
+        fill: new Fill({
+          color: 'rgba(255, 255, 0, 0.3)',
+        }),
+        stroke: new Stroke({
+          color: 'rgba(0, 0, 0, 0.6)',
+          width: 0.5,
+        })
+      }))
+      this.positionVectorSource.addFeature(positionAccuracy);
     })
   }
 

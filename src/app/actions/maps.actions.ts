@@ -6,7 +6,7 @@ export const MapsActions = createActionGroup({
   events: {
     'Load Mapss': emptyProps(),
     'Zoom To Position': emptyProps(),
-    'Zoom To Position Success': props<{ coordinates: Coordinate }>(),
+    'Zoom To Position Success': props<{ coordinates: Coordinate, accuracy: number }>(),
     'Zoom To Position Failure': emptyProps(),
     'Toggle Bicycle': emptyProps(),
     'Toggle Scooter': emptyProps(),

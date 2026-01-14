@@ -3,16 +3,7 @@ import {Feature, View} from 'ol';
 import {MapboxVectorLayer} from 'ol-mapbox-style';
 import Map from 'ol/Map';
 import {Store} from '@ngrx/store';
-import {
-  allVehicles,
-  bicycleVisible,
-  centerAccuracy,
-  mapCenter,
-  mapZoom,
-  minimumCharge,
-  operatorVisible,
-  scooterVisible
-} from '../reducers';
+import {accuracy, allVehicles, bicycleVisible, mapCenter, mapZoom, minimumCharge, operatorVisible, position, scooterVisible} from '../reducers';
 import {SharingOperator, Vehicle, VehicleType} from '../model/model';
 import {Fill, Icon, Stroke, Style} from 'ol/style';
 import VectorSource from 'ol/source/Vector';
@@ -25,82 +16,96 @@ import CircleStyle from 'ol/style/Circle';
 import {FeatureLike} from 'ol/Feature';
 
 
-@Component({
+@Component( {
   selector: 'app-integrated-map',
   imports: [],
   templateUrl: './integrated-map.html',
   styleUrl: './integrated-map.css',
-})
+} )
 export class IntegratedMap implements OnInit {
 
   private readonly vehiclesVectorSource = new VectorSource();
   private readonly positionVectorSource = new VectorSource();
 
-  private store = inject(Store)
+  private store = inject( Store )
 
-  private vehicles = this.store.selectSignal<Record<SharingOperator, Vehicle[]>>(allVehicles);
-  private center = this.store.selectSignal<Coordinate>(mapCenter);
-  private accuracy = this.store.selectSignal<number>(centerAccuracy);
-  private zoom = this.store.selectSignal<number>(mapZoom);
-  private bicycleVisible = this.store.selectSignal<boolean>(bicycleVisible);
-  private scooterVisible = this.store.selectSignal<boolean>(scooterVisible);
-  private limeVisible = this.store.selectSignal<boolean>(operatorVisible('lime'));
-  private dottVisible = this.store.selectSignal<boolean>(operatorVisible('dott'));
-  private birdVisible = this.store.selectSignal<boolean>(operatorVisible('bird'));
-  private minimumCharge = this.store.selectSignal<number>(minimumCharge);
+  private vehicles = this.store.selectSignal<Record<SharingOperator, Vehicle[]>>( allVehicles );
+  private center = this.store.selectSignal<Coordinate>( mapCenter );
+  private zoom = this.store.selectSignal<number>( mapZoom );
+  private position = this.store.selectSignal<Coordinate | undefined>( position );
+  private accuracy = this.store.selectSignal<number | undefined>( accuracy );
+  private bicycleVisible = this.store.selectSignal<boolean>( bicycleVisible );
+  private scooterVisible = this.store.selectSignal<boolean>( scooterVisible );
+  private limeVisible = this.store.selectSignal<boolean>( operatorVisible( 'lime' ) );
+  private dottVisible = this.store.selectSignal<boolean>( operatorVisible( 'dott' ) );
+  private birdVisible = this.store.selectSignal<boolean>( operatorVisible( 'bird' ) );
+  private minimumCharge = this.store.selectSignal<number>( minimumCharge );
 
   private readonly view: View;
 
   constructor() {
-    this.view = new View({
+    this.view = new View( {
       zoom: initialState.zoom,
-      center: initialState.center
-    });
-    effect(() => {
+      center: initialState.position
+    } );
+    effect( () => {
       this.vehiclesVectorSource.clear();
-      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().dott.filter(v => this.minimumCharge() <= v.percentageCharge).filter(v => this.dottVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
-      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().lime.filter(v => this.minimumCharge() <= v.percentageCharge).filter(v => this.limeVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
-      this.vehiclesVectorSource.addFeatures(this.toFeatures(this.vehicles().bird.filter(v => this.minimumCharge() <= v.percentageCharge).filter(v => this.birdVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()))));
-    });
-    effect(() => {
-      this.view.setZoom(this.zoom());
-      this.view.setCenter([this.center()[0], this.center()[1]]);
+      this.vehiclesVectorSource.addFeatures( this.toFeatures( this.vehicles().dott.filter( v => this.minimumCharge() <= v.percentageCharge ).filter( v => this.dottVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
+      this.vehiclesVectorSource.addFeatures( this.toFeatures( this.vehicles().lime.filter( v => this.minimumCharge() <= v.percentageCharge ).filter( v => this.limeVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
+      this.vehiclesVectorSource.addFeatures( this.toFeatures( this.vehicles().bird.filter( v => this.minimumCharge() <= v.percentageCharge ).filter( v => this.birdVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
+    } );
+
+    effect( () => {
+      this.view.animate( {
+        center: [this.center()[0], this.center()[1]],
+        zoom: this.zoom(),
+        duration: 500
+      } )
+    } );
+
+    effect( () => {
+      if ( this.position() === undefined ) {
+        return;
+      }
+      if ( this.positionVectorSource.getFeatures().length === 0 ) {
+        this.store.dispatch( MapsActions.zoomToPosition() );
+      }
       this.positionVectorSource.clear();
-      const feature = new Feature({
+      const feature = new Feature( {
         geometry: new Point(
-          this.center()
+          this.position()!
         )
-      });
-      feature.setStyle(new Style({
-        image: new CircleStyle({
+      } );
+      feature.setStyle( new Style( {
+        image: new CircleStyle( {
           radius: 6,
-          fill: new Fill({
+          fill: new Fill( {
             color: 'rgba(255, 255, 0, 0.6)',
-          }),
-          stroke: new Stroke({
+          } ),
+          stroke: new Stroke( {
             color: '#000000',
             width: 1,
-          })
-        }),
-      }));
-      this.positionVectorSource.addFeature(feature);
-      const positionAccuracy = new Feature(new Circle(this.center(), this.accuracy()));
-      positionAccuracy.setStyle(new Style({
-        fill: new Fill({
+          } )
+        } ),
+      } ) );
+      this.positionVectorSource.addFeature( feature );
+      const positionAccuracy = new Feature( new Circle( this.position()!, this.accuracy() ) );
+      positionAccuracy.setStyle( new Style( {
+        fill: new Fill( {
           color: 'rgba(255, 255, 0, 0.3)',
-        }),
-        stroke: new Stroke({
+        } ),
+        stroke: new Stroke( {
           color: 'rgba(0, 0, 0, 0.6)',
           width: 0.5,
-        })
-      }))
-      this.positionVectorSource.addFeature(positionAccuracy);
-    })
+        } )
+      } ) )
+      this.positionVectorSource.addFeature( positionAccuracy );
+    } )
   }
 
-  private toFeatures(vv: Vehicle[]): Feature<Geometry>[] {
-    return vv.map(v => {
-      let feature = new Feature({
+  private toFeatures( vv: Vehicle[] ): Feature<Geometry>[] {
+    return vv.map( v => {
+      let feature = new Feature( {
         geometry: new Point(
           v.coordinates
         ),
@@ -108,46 +113,46 @@ export class IntegratedMap implements OnInit {
         operator: v.operator,
         vehicleType: v.vehicleType,
         percentageCharge: v.percentageCharge
-      });
-      feature.setStyle((feat: FeatureLike, res: number) => {
-        if (res < 8) {
-          return this.styleForElement(feat.getProperties()['operator'] as SharingOperator, feat.getProperties()['vehicleType'] as VehicleType, feat.getProperties()['percentageCharge'] as number)
+      } );
+      feature.setStyle( ( feat: FeatureLike, res: number ) => {
+        if ( res < 4 ) {
+          return this.styleForElement( feat.getProperties()['operator'] as SharingOperator, feat.getProperties()['vehicleType'] as VehicleType, feat.getProperties()['percentageCharge'] as number )
         }
-        return new Style({
-          image: new CircleStyle({
+        return new Style( {
+          image: new CircleStyle( {
             radius: 6,
-            fill: new Fill({
+            fill: new Fill( {
               color: this.fillColors[feat.getProperties()['operator'] as SharingOperator],
-            }),
-            stroke: new Stroke({
+            } ),
+            stroke: new Stroke( {
               color: this.borderColors[feat.getProperties()['operator'] as SharingOperator],
               width: 1,
-            })
-          }),
-        })
-      });
+            } )
+          } ),
+        } )
+      } );
       return feature;
-    })
+    } )
   }
 
 
   ngOnInit(): void {
-    const map = new Map({
+    const map = new Map( {
       target: 'map',
       view: this.view,
       controls: [],
-    });
-    const layer = new MapboxVectorLayer({
+    } );
+    const layer = new MapboxVectorLayer( {
       styleUrl: 'openstreetmap.json',
-    });
-    map.addLayer(layer);
-    map.addLayer(new VectorLayer({
+    } );
+    map.addLayer( layer );
+    map.addLayer( new VectorLayer( {
       source: this.vehiclesVectorSource,
-    }));
-    map.addLayer(new VectorLayer({
+    } ) );
+    map.addLayer( new VectorLayer( {
       source: this.positionVectorSource,
-    }));
-    this.store.dispatch(MapsActions.zoomToPosition());
+    } ) );
+    this.store.dispatch( MapsActions.zoomToPosition() );
   }
 
   private readonly fillColors: Record<SharingOperator, string> = {
@@ -161,38 +166,38 @@ export class IntegratedMap implements OnInit {
     dott: '#E0120A'
   };
 
-  private styleForElement(operator: SharingOperator, vehicleType: VehicleType, chargePercentage: number) {
+  private styleForElement( operator: SharingOperator, vehicleType: VehicleType, chargePercentage: number ) {
 
     return [
-      this.createSvgProgressStyle(chargePercentage, this.fillColors[operator]),
-      new Style({
-        image: new Icon({
+      this.createSvgProgressStyle( chargePercentage, this.fillColors[operator] ),
+      new Style( {
+        image: new Icon( {
           src: `/icons/${vehicleType}.svg`,
           scale: 0.6,
           anchor: [0.5, 0.5],
           anchorXUnits: 'fraction',
           anchorYUnits: 'fraction',
           color: this.borderColors[operator]
-        }),
-      })];
+        } ),
+      } )];
   }
 
-  private createSvgProgressStyle(percentage: number, fillColor: string): Style {
-    const svg = this.generateProgressSvg(percentage, {
+  private createSvgProgressStyle( percentage: number, fillColor: string ): Style {
+    const svg = this.generateProgressSvg( percentage, {
       progressColor:
         percentage < 20 ? '#f44336' :
           percentage < 50 ? '#ffc107' :
             '#4caf50',
       fillColor
-    });
+    } );
 
-    return new Style({
-      image: new Icon({
-        src: this.svgToDataUrl(svg),
+    return new Style( {
+      image: new Icon( {
+        src: this.svgToDataUrl( svg ),
         scale: 1,
         anchor: [0.5, 0.5],
-      }),
-    });
+      } ),
+    } );
   }
 
   private generateProgressSvg(
@@ -245,7 +250,7 @@ export class IntegratedMap implements OnInit {
 </svg>`;
   }
 
-  private svgToDataUrl(svg: string): string {
-    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  private svgToDataUrl( svg: string ): string {
+    return `data:image/svg+xml;utf8,${encodeURIComponent( svg )}`;
   }
 }

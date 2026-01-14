@@ -9,18 +9,18 @@ import {provideEffects} from '@ngrx/effects';
 import {provideHttpClient} from '@angular/common/http';
 import {VehiclesEffects} from './effects/vehicles.effects';
 import {MapsEffects} from './effects/maps.effects';
-import { provideServiceWorker } from '@angular/service-worker';
+import {provideServiceWorker} from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
-    provideRouter(routes),
-    provideStore(reducers, {metaReducers}),
-    provideStoreDevtools({maxAge: 25, logOnly: !isDevMode()}),
-    provideEffects(VehiclesEffects, MapsEffects), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          })
+    provideRouter( routes ),
+    provideStore( reducers, {metaReducers} ),
+    provideStoreDevtools( {maxAge: 25, logOnly: !isDevMode()} ),
+    provideEffects( VehiclesEffects, MapsEffects ), provideServiceWorker( 'ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    } )
   ]
 };

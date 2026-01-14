@@ -8,22 +8,22 @@ import {catchError, map, mergeMap, of} from 'rxjs';
 @Injectable()
 export class VehiclesEffects {
 
-  private actions$ = inject(Actions);
-  private gbsfService = inject(GeneralBikeShareFeed);
+  private actions$ = inject( Actions );
+  private gbsfService = inject( GeneralBikeShareFeed );
 
-  loadVehicles$ = createEffect(() => {
+  loadVehicles$ = createEffect( () => {
     return this.actions$.pipe(
-      ofType(VehiclesActions.loadVehicles),
-      mergeMap(action =>
-        this.gbsfService.loadOperatorVehicles(action.operator).pipe(
-          map(vehicles => VehiclesActions.loadVehiclesSuccess({
+      ofType( VehiclesActions.loadVehicles ),
+      mergeMap( action =>
+        this.gbsfService.loadOperatorVehicles( action.operator ).pipe(
+          map( vehicles => VehiclesActions.loadVehiclesSuccess( {
             operator: action.operator, vehicles: vehicles
-          })),
-          catchError(error => of(VehiclesActions.loadVehiclesFailure({
+          } ) ),
+          catchError( error => of( VehiclesActions.loadVehiclesFailure( {
             operator: action.operator, error: ''
-          })))
+          } ) ) )
         )
       )
     )
-  })
+  } )
 }

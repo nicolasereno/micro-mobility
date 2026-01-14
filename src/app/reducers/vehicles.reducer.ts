@@ -22,31 +22,31 @@ export const initialState: VehiclesState = {
 
 export const vehiclesReducer = createReducer(
   initialState,
-  on(VehiclesActions.loadVehicles, (state, {operator}) => ({
+  on( VehiclesActions.loadVehicles, ( state, {operator} ) => ({
     ...state,
     vehicles: {
       ...state.vehicles,
       [operator]: []
     },
     error: null
-  })),
-  on(VehiclesActions.loadVehiclesSuccess, (state, {operator, vehicles}) => ({
+  }) ),
+  on( VehiclesActions.loadVehiclesSuccess, ( state, {operator, vehicles} ) => ({
     ...state,
     vehicles: {
       ...state.vehicles,
       [operator]: vehicles
     }
-  })),
-  on(VehiclesActions.loadVehiclesFailure, (state, {operator, error}) => ({
+  }) ),
+  on( VehiclesActions.loadVehiclesFailure, ( state, {operator, error} ) => ({
     ...state,
     error: error
-  })),
-  on(VehiclesActions.toggleOperator, (state, {operator}) => ({
+  }) ),
+  on( VehiclesActions.toggleOperator, ( state, {operator} ) => ({
     ...state,
     vehiclesVisible: {
       ...state.vehiclesVisible,
       [operator]: !state.vehiclesVisible[operator]
     }
-  }))
+  }) )
 );
 

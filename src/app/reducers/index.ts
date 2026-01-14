@@ -14,16 +14,17 @@ export const reducers: ActionReducerMap<AppState> = {
   [mapsFeatureKey]: mapsReducer,
 };
 
-export const allVehicles = (state: AppState) => state.vehicles.vehicles;
-export const mapCenter = (state: AppState) => state.maps.center;
-export const centerAccuracy = (state: AppState) => state.maps.accuracy;
-export const mapZoom = (state: AppState) => state.maps.zoom;
-export const bicycleVisible = (state: AppState) => state.maps.bicycleVisible;
-export const scooterVisible = (state: AppState) => state.maps.scooterVisible;
-export const operatorsVisible = (state: AppState) => state.vehicles.vehiclesVisible;
-export const minimumCharge = (state: AppState) => state.maps.minimumCharge;
+export const allVehicles = ( state: AppState ) => state.vehicles.vehicles;
+export const position = ( state: AppState ) => state.maps.position;
+export const accuracy = ( state: AppState ) => state.maps.accuracy;
+export const mapCenter = ( state: AppState ) => state.maps.center;
+export const mapZoom = ( state: AppState ) => state.maps.zoom;
+export const bicycleVisible = ( state: AppState ) => state.maps.bicycleVisible;
+export const scooterVisible = ( state: AppState ) => state.maps.scooterVisible;
+export const operatorsVisible = ( state: AppState ) => state.vehicles.vehiclesVisible;
+export const minimumCharge = ( state: AppState ) => state.maps.minimumCharge;
 
-export const operatorVisible = (operator: SharingOperator) =>
+export const operatorVisible = ( operator: SharingOperator ) =>
   createSelector(
     operatorsVisible,
     operators => operators[operator]

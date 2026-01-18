@@ -29,7 +29,7 @@ export class MapsEffects {
               accuracy: position.coords.accuracy
             } )
           ),
-          catchError( err =>
+          catchError( () =>
             of( MapsActions.getGPSPositionFailure() )
           )
         )

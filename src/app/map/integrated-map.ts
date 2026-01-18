@@ -1,5 +1,5 @@
 import {Component, effect, inject, OnInit} from '@angular/core';
-import {Feature, View} from 'ol';
+import {Feature, MapBrowserEvent, View} from 'ol';
 import {MapboxVectorLayer} from 'ol-mapbox-style';
 import Map from 'ol/Map';
 import {Store} from '@ngrx/store';
@@ -14,7 +14,8 @@ import {Coordinate} from 'ol/coordinate';
 import {initialState} from '../reducers/maps.reducer';
 import CircleStyle from 'ol/style/Circle';
 import {FeatureLike} from 'ol/Feature';
-
+import {GeoJSON} from 'ol/format';
+import Text from 'ol/style/Text';
 
 @Component( {
   selector: 'app-integrated-map',
@@ -105,7 +106,7 @@ export class IntegratedMap implements OnInit {
 
   private toFeatures( vv: Vehicle[] ): Feature<Geometry>[] {
     return vv.map( v => {
-      let feature = new Feature( {
+      const feature = new Feature( {
         geometry: new Point(
           v.coordinates
         ),
@@ -142,10 +143,54 @@ export class IntegratedMap implements OnInit {
       view: this.view,
       controls: [],
     } );
-    const layer = new MapboxVectorLayer( {
+    const openstreetmap = new MapboxVectorLayer( {
       styleUrl: 'openstreetmap.json',
     } );
-    map.addLayer( layer );
+    const stops = new VectorLayer( {
+      source: new VectorSource( {
+        url: 'stops.json',
+        format: new GeoJSON(),
+      } ),
+      minZoom: 16,
+      maxZoom: 24,
+    } );
+    stops.setStyle( (
+      feature: FeatureLike,
+      resolution: number
+    ): Style => {
+      const code = feature.get( 'c' ) ?? '';
+
+      return new Style( {
+        text: new Text( {
+          text: String( code ),
+          font: 'bold 12px Arial',
+          padding: [2, 2, 2, 2],
+          fill: new Fill( {color: '#8F001D'} ),
+          backgroundFill: new Fill( {color: '#FF6A00'} ),
+          backgroundStroke: new Stroke( {
+            color: '#8F001D',
+            width: 2
+          } ),
+          textAlign: 'center',
+          textBaseline: 'middle'
+        } )
+      } );
+    } );
+    map.on( 'singleclick', ( event: MapBrowserEvent ) => {
+      const feature = map.forEachFeatureAtPixel(
+        event.pixel,
+        ( f: FeatureLike ) => f,
+        {
+          layerFilter: ( layer ) => layer === stops
+        }
+      );
+      if ( feature ) {
+        const code = feature.get( 'c' );
+        console.log( 'Clicked bus stop:', code );
+      }
+    } );
+    map.addLayer( openstreetmap );
+    map.addLayer( stops );
     map.addLayer( new VectorLayer( {
       source: this.vehiclesVectorSource,
     } ) );

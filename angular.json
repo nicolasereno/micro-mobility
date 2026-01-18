@@ -4,6 +4,7 @@
   "cli": {
     "packageManager": "npm",
     "schematicCollections": [
+      "angular-eslint",
       "@ngrx/schematics"
     ]
   },
@@ -94,6 +95,15 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }

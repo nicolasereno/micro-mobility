@@ -19,7 +19,7 @@ export class VehiclesEffects {
           map( vehicles => VehiclesActions.loadVehiclesSuccess( {
             operator: action.operator, vehicles: vehicles
           } ) ),
-          catchError( error => of( VehiclesActions.loadVehiclesFailure( {
+          catchError( () => of( VehiclesActions.loadVehiclesFailure( {
             operator: action.operator, error: ''
           } ) ) )
         )

@@ -30,7 +30,7 @@ export class App implements OnInit {
   private visibility = toSignal(
     fromEvent( document, 'visibilitychange' )
       .pipe(
-        map( e => document.visibilityState === 'visible' ) ),
+        map( () => document.visibilityState === 'visible' ) ),
     {initialValue: true}
   );
 
@@ -41,12 +41,12 @@ export class App implements OnInit {
     interval( 5000 )
       .pipe(
         takeUntilDestroyed(),
-        filter( _ => this.visibility() ) )
+        filter( () => this.visibility() ) )
       .subscribe( () => this.getGPSPosition() );
     interval( 2 * 60 * 1000 )
       .pipe(
         takeUntilDestroyed(),
-        filter( _ => this.visibility() ) )
+        filter( () => this.visibility() ) )
       .subscribe( () => this.reloadData() );
   }
 

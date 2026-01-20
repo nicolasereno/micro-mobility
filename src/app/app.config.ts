@@ -10,6 +10,7 @@ import {provideHttpClient} from '@angular/common/http';
 import {VehiclesEffects} from './effects/vehicles.effects';
 import {MapsEffects} from './effects/maps.effects';
 import {provideServiceWorker} from '@angular/service-worker';
+import {BusesEffects} from './effects/buses.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,7 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter( routes ),
     provideStore( reducers, {metaReducers} ),
     provideStoreDevtools( {maxAge: 25, logOnly: !isDevMode()} ),
-    provideEffects( VehiclesEffects, MapsEffects ), provideServiceWorker( 'ngsw-worker.js', {
+    provideEffects( VehiclesEffects, MapsEffects, BusesEffects ), provideServiceWorker( 'ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
     } )

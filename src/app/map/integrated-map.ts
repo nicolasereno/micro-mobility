@@ -16,6 +16,7 @@ import CircleStyle from 'ol/style/Circle';
 import {FeatureLike} from 'ol/Feature';
 import {GeoJSON} from 'ol/format';
 import Text from 'ol/style/Text';
+import {BusesActions} from '../actions/buses.actions';
 
 @Component( {
   selector: 'app-integrated-map',
@@ -186,13 +187,15 @@ export class IntegratedMap implements OnInit {
       );
       if ( feature ) {
         const code = feature.get( 'c' );
-        console.log( 'Clicked bus stop:', code );
+        this.store.dispatch( BusesActions.loadBuses( {stopCode: code} ) );
       }
     } );
     map.addLayer( openstreetmap );
     map.addLayer( stops );
     map.addLayer( new VectorLayer( {
       source: this.vehiclesVectorSource,
+      minZoom: 13,
+      maxZoom: 24,
     } ) );
     map.addLayer( new VectorLayer( {
       source: this.positionVectorSource,

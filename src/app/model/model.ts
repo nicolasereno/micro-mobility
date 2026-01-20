@@ -11,3 +11,18 @@ export type Vehicle = {
   coordinates: Coordinate;
 }
 
+export type BusTimesInfo = {
+  lineCode: string;
+  vehicleNumber: string;
+  direction: string;
+  atStart: boolean;
+  distance: number;
+  time: number;
+  arriving: boolean;
+}
+
+export type BusStopTimesInfo = {
+  stopCode: string;
+  stopName: string;
+  arrivals: BusTimesInfo[];
+}

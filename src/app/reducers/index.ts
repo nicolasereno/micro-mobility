@@ -3,15 +3,18 @@ import {ActionReducerMap, createSelector, MetaReducer} from '@ngrx/store';
 import {vehiclesFeatureKey, vehiclesReducer, VehiclesState} from './vehicles.reducer';
 import {mapsFeatureKey, mapsReducer, MapsState} from './maps.reducer';
 import {SharingOperator} from '../model/model';
+import {busesFeatureKey, busesReducer, BusesState} from './buses.reducer';
 
 export interface AppState {
   [vehiclesFeatureKey]: VehiclesState;
   [mapsFeatureKey]: MapsState;
+  [busesFeatureKey]: BusesState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
   [vehiclesFeatureKey]: vehiclesReducer,
   [mapsFeatureKey]: mapsReducer,
+  [busesFeatureKey]: busesReducer,
 };
 
 export const allVehicles = ( state: AppState ) => state.vehicles.vehicles;

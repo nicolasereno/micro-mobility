@@ -26,4 +26,18 @@ export class BusesEffects {
       )
     )
   } )
+
+/*  refreshStopTimes$ = createEffect( () => {
+    return this.actions$.pipe(
+      ofType( BusesActions.refreshBuses ),
+      mergeMap( action =>
+        this.busStopTimesService.loadBusStopTimes( action.stopCode ).pipe(
+          map( info => BusesActions.loadBusesSuccess( {
+            times: info
+          } ) )
+        )
+      )
+    )
+  } )*/
+
 }

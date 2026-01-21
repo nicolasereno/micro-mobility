@@ -1,0 +1,41 @@
+<mat-card class="panel">
+  <!-- HEADER -->
+  <div class="panel-header">
+    <div class="header-left">
+      <a matButton aria-label="Refresh" (click)="reloadData()">
+        <mat-icon>refresh</mat-icon>
+      </a>
+
+      <div class="header-text">
+        <div class="title">{{ stopName() }}</div>
+        <div class="subtitle">ID {{ stopCode() }}</div>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- LIST -->
+  @if (busWaitTimes()) {
+    <div class="lines">
+      @for (time of busWaitTimes(); track time.vehicleNumber) {
+        <div class="line">
+          <div class="line-left">
+            <div class="line-badge">{{ time.lineCode }}</div>
+
+            <div class="line-info">
+              <div class="line-name">{{ time.direction }}</div>
+              <div class="line-meta">
+                {{ time.vehicleNumber }} · {{ time.distance }} fermate
+              </div>
+            </div>
+          </div>
+
+          @if (!time.atStart) {
+            <div class="line-time">{{ time.distance }} <span>min</span></div>
+          }
+        </div>
+      }
+    </div>
+  }
+</mat-card>

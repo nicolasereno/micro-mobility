@@ -2,14 +2,16 @@ import {Component, effect, inject, OnInit} from '@angular/core';
 import {IntegratedMap} from './map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
-import {bicycleVisible, minimumCharge, operatorVisible, scooterVisible} from './reducers';
-import {SharingOperator} from './model/model';
+import {bicycleVisible, busWaitTimes, minimumCharge, scooterVisible} from './reducers';
+import {BusTimesInfo, SharingOperator} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatButton} from '@angular/material/button';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {filter, fromEvent, interval, map} from 'rxjs';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {BusWaitTime} from './bus-wait-time/bus-wait-time';
 
 @Component( {
   selector: 'app-root',
@@ -19,15 +21,16 @@ import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 } )
 export class App implements OnInit {
 
-  private store = inject( Store );
+  private readonly store = inject( Store );
+  private readonly bottomSheet = inject( MatBottomSheet );
+
   protected bicycleVisible = this.store.selectSignal<boolean>( bicycleVisible );
   protected scooterVisible = this.store.selectSignal<boolean>( scooterVisible );
-  protected limeVisible = this.store.selectSignal<boolean>( operatorVisible( 'lime' ) );
-  protected dottVisible = this.store.selectSignal<boolean>( operatorVisible( 'dott' ) );
-  protected birdVisible = this.store.selectSignal<boolean>( operatorVisible( 'bird' ) );
   protected minimumCharge = this.store.selectSignal<number>( minimumCharge );
 
-  private visibility = toSignal(
+  protected busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
+
+  private readonly visibility = toSignal(
     fromEvent( document, 'visibilitychange' )
       .pipe(
         map( () => document.visibilityState === 'visible' ) ),
@@ -36,7 +39,10 @@ export class App implements OnInit {
 
   constructor() {
     effect( () => {
-      console.log( 'visibility changed...' + this.visibility() );
+      if ( this.busWaitTimes() ) {
+        console.log( 'bus wait time arrived...' + JSON.stringify( this.busWaitTimes() ) );
+        this.bottomSheet.open( BusWaitTime );
+      }
     } );
     interval( 5000 )
       .pipe(

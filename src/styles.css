@@ -5,6 +5,6 @@ html, body {
   margin: 0;
 }
 
-
-.ol-zoom .ol-zoom-in, .ol-zoom .ol-zoom-out {
+.mat-bottom-sheet-container {
+  padding: 0 !important;
 }

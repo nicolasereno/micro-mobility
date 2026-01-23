@@ -15,24 +15,25 @@
 
   <mat-divider></mat-divider>
 
-  <!-- LIST -->
   @if (busWaitTimes()) {
     <div class="lines">
-      @for (time of busWaitTimes(); track time.vehicleNumber) {
+      @for (time of busWaitTimes(); track time) {
         <div class="line">
           <div class="line-left">
             <div class="line-badge">{{ time.lineCode }}</div>
 
             <div class="line-info">
               <div class="line-name">{{ time.direction }}</div>
-              <div class="line-meta">
-                {{ time.vehicleNumber }} · {{ time.distance }} fermate
-              </div>
+              @if (time.distance) {
+                <div class="line-meta">
+                  {{ `${time.distance} fermate` }}
+                </div>
+              }
             </div>
           </div>
 
           @if (!time.atStart) {
-            <div class="line-time">{{ time.distance }} <span>min</span></div>
+            <div class="line-time">{{ time.arriving ? 'Ora' : time.time + ' min' }}</div>
           }
         </div>
       }

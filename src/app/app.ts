@@ -10,8 +10,9 @@ import {MatButton} from '@angular/material/button';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {filter, fromEvent, interval, map} from 'rxjs';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
-import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {BusWaitTime} from './bus-wait-time/bus-wait-time';
+import {BottomSheetState} from './bottom-sheet-state';
+import {BusesActions} from './actions/buses.actions';
 
 @Component( {
   selector: 'app-root',
@@ -22,7 +23,7 @@ import {BusWaitTime} from './bus-wait-time/bus-wait-time';
 export class App implements OnInit {
 
   private readonly store = inject( Store );
-  private readonly bottomSheet = inject( MatBottomSheet );
+  private readonly bottomSheetState = inject( BottomSheetState );
 
   protected bicycleVisible = this.store.selectSignal<boolean>( bicycleVisible );
   protected scooterVisible = this.store.selectSignal<boolean>( scooterVisible );
@@ -39,9 +40,15 @@ export class App implements OnInit {
 
   constructor() {
     effect( () => {
-      if ( this.busWaitTimes() ) {
+      console.log( 'OPEN: ' + this.bottomSheetState.isOpen() );
+      if ( !this.bottomSheetState.isOpen() ) {
+        this.store.dispatch( BusesActions.clearBuses() );
+      }
+    } );
+    effect( () => {
+      if ( this.busWaitTimes() && !this.bottomSheetState.isOpen() ) {
         console.log( 'bus wait time arrived...' + JSON.stringify( this.busWaitTimes() ) );
-        this.bottomSheet.open( BusWaitTime );
+        this.bottomSheetState.open( BusWaitTime );
       }
     } );
     interval( 5000 )

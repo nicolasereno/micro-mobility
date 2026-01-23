@@ -27,7 +27,7 @@ export class BusesEffects {
     )
   } )
 
-/*  refreshStopTimes$ = createEffect( () => {
+  refreshStopTimes$ = createEffect( () => {
     return this.actions$.pipe(
       ofType( BusesActions.refreshBuses ),
       mergeMap( action =>
@@ -38,6 +38,6 @@ export class BusesEffects {
         )
       )
     )
-  } )*/
+  } )
 
 }

@@ -13,11 +13,10 @@ export type Vehicle = {
 
 export type BusTimesInfo = {
   lineCode: string;
-  vehicleNumber: string;
   direction: string;
   atStart: boolean;
-  distance: number;
-  time: number;
+  distance: number | undefined;
+  time: number | undefined;
   arriving: boolean;
 }
 

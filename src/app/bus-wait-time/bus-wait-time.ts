@@ -2,7 +2,7 @@ import {Component, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {BusTimesInfo} from '../model/model';
 import {busWaitTimes, stopCode, stopName} from '../reducers';
-import {MatDivider, MatList, MatListItem} from '@angular/material/list';
+import {MatDivider} from '@angular/material/list';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {BusesActions} from '../actions/buses.actions';
@@ -11,8 +11,6 @@ import {MatCard} from '@angular/material/card';
 @Component( {
   selector: 'app-bus-wait-time',
   imports: [
-    MatList,
-    MatListItem,
     MatButton,
     MatIcon,
     MatDivider,

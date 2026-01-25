@@ -3,7 +3,18 @@ import {Feature, MapBrowserEvent, View} from 'ol';
 import {MapboxVectorLayer} from 'ol-mapbox-style';
 import Map from 'ol/Map';
 import {Store} from '@ngrx/store';
-import {accuracy, allVehicles, bicycleVisible, mapCenter, mapZoom, minimumCharge, operatorVisible, position, scooterVisible} from '../reducers';
+import {
+  accuracy,
+  allVehicles,
+  bicycleVisible,
+  mapCenter,
+  mapZoom,
+  minimumCharge,
+  operatorVisible,
+  position,
+  scooterVisible,
+  stopCode
+} from '../reducers';
 import {SharingOperator, Vehicle, VehicleType} from '../model/model';
 import {Fill, Icon, Stroke, Style} from 'ol/style';
 import VectorSource from 'ol/source/Vector';
@@ -29,6 +40,8 @@ export class IntegratedMap implements OnInit {
   private readonly vehiclesVectorSource = new VectorSource();
   private readonly positionVectorSource = new VectorSource();
 
+  private stops: VectorLayer | null = null;
+
   private store = inject( Store )
 
   private vehicles = this.store.selectSignal<Record<SharingOperator, Vehicle[]>>( allVehicles );
@@ -43,6 +56,8 @@ export class IntegratedMap implements OnInit {
   private birdVisible = this.store.selectSignal<boolean>( operatorVisible( 'bird' ) );
   private minimumCharge = this.store.selectSignal<number>( minimumCharge );
 
+  private stopCode = this.store.selectSignal<string|undefined>(stopCode);
+
   private readonly view: View;
 
   constructor() {
@@ -56,6 +71,11 @@ export class IntegratedMap implements OnInit {
       this.vehiclesVectorSource.addFeatures( this.toFeatures( this.vehicles().lime.filter( v => this.minimumCharge() <= v.percentageCharge ).filter( v => this.limeVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
       this.vehiclesVectorSource.addFeatures( this.toFeatures( this.vehicles().bird.filter( v => this.minimumCharge() <= v.percentageCharge ).filter( v => this.birdVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
     } );
+
+    effect(() => {
+      console.log(this.stopCode());
+      this.stops!.changed();
+    });
 
     effect( () => {
       this.view.animate( {
@@ -147,7 +167,7 @@ export class IntegratedMap implements OnInit {
     const openstreetmap = new MapboxVectorLayer( {
       styleUrl: 'openstreetmap.json',
     } );
-    const stops = new VectorLayer( {
+    this.stops = new VectorLayer( {
       source: new VectorSource( {
         url: 'stops.json',
         format: new GeoJSON(),
@@ -155,7 +175,7 @@ export class IntegratedMap implements OnInit {
       minZoom: 16,
       maxZoom: 24,
     } );
-    stops.setStyle( (
+    this.stops.setStyle( (
       feature: FeatureLike,
       resolution: number
     ): Style => {
@@ -166,11 +186,11 @@ export class IntegratedMap implements OnInit {
           text: String( code ),
           font: 'bold 12px Arial',
           padding: [2, 2, 2, 2],
-          fill: new Fill( {color: '#8F001D'} ),
-          backgroundFill: new Fill( {color: '#FF6A00'} ),
+          fill: this.stopCode() === code ? new Fill( {color: '#FF6A00'} ) :  new Fill( {color: '#8F001D'} ),
+          backgroundFill: this.stopCode() === code ? new Fill( {color: '#8F001D'} ) :  new Fill( {color: '#FF6A00'} ),
           backgroundStroke: new Stroke( {
-            color: '#8F001D',
-            width: 2
+            color: this.stopCode() === code ? '#FF6A00' : '#8F001D',
+            width: this.stopCode() === code ? 4 : 2
           } ),
           textAlign: 'center',
           textBaseline: 'middle'
@@ -182,7 +202,7 @@ export class IntegratedMap implements OnInit {
         event.pixel,
         ( f: FeatureLike ) => f,
         {
-          layerFilter: ( layer ) => layer === stops
+          layerFilter: ( layer ) => layer === this.stops
         }
       );
       if ( feature ) {
@@ -191,7 +211,7 @@ export class IntegratedMap implements OnInit {
       }
     } );
     map.addLayer( openstreetmap );
-    map.addLayer( stops );
+    map.addLayer( this.stops );
     map.addLayer( new VectorLayer( {
       source: this.vehiclesVectorSource,
       minZoom: 13,

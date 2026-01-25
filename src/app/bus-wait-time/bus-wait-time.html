@@ -32,7 +32,9 @@
             </div>
           </div>
 
-          <div class="line-time">{{ time.arriving ? 'Ora' : time.time + ' min' }}</div>
+          @if (time.arriving || time.time) {
+            <div class="line-time">{{ time.arriving ? 'Ora' : time.time + ' min' }}</div>
+          }
         </div>
       }
     </div>

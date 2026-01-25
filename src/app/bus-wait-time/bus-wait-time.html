@@ -26,15 +26,13 @@
               <div class="line-name">{{ time.direction }}</div>
               @if (time.distance) {
                 <div class="line-meta">
-                  {{ `${time.distance} fermate` }}
+                  {{ time.distance }} fermate
                 </div>
               }
             </div>
           </div>
 
-          @if (!time.atStart) {
-            <div class="line-time">{{ time.arriving ? 'Ora' : time.time + ' min' }}</div>
-          }
+          <div class="line-time">{{ time.arriving ? 'Ora' : time.time + ' min' }}</div>
         </div>
       }
     </div>

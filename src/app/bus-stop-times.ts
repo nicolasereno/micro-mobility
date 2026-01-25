@@ -37,16 +37,11 @@ export class BusStopTimes {
             }) ).sort( ( a: BusTimesInfo, b: BusTimesInfo ) => {
               // 1️⃣ arriving: true first
               if ( a.arriving !== b.arriving ) {
-                return a.arriving ? -1 : 1;
+                return a.arriving ? 1 : -1;
               }
-              // 2️⃣ atStart: false first
-              if ( a.atStart !== b.atStart ) {
-                return a.atStart ? 1 : -1;
-              }
-              // 3️⃣ distance: numeric ascending
-              const distanceDiff = Number( a.distance ) - Number( b.distance );
-              if ( distanceDiff !== 0 ) {
-                return distanceDiff;
+              // 2️⃣ time to stop
+              if ( a.time !== b.time ) {
+                return (( a.time ? a.time : 1000 )> ( b.time ? b.time : 1000 )) ? 1 : -1;
               }
               // 4️⃣ lineCode: string ascending
               return a.lineCode.localeCompare( b.lineCode );

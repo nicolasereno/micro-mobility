@@ -37,11 +37,13 @@ export class BusStopTimes {
             }) ).sort( ( a: BusTimesInfo, b: BusTimesInfo ) => {
               // 1️⃣ arriving: true first
               if ( a.arriving !== b.arriving ) {
-                return a.arriving ? 1 : -1;
+                return a.arriving ? -1 : 1;
               }
               // 2️⃣ time to stop
               if ( a.time !== b.time ) {
-                return (( a.time ? a.time : 1000 )> ( b.time ? b.time : 1000 )) ? 1 : -1;
+                const ta = a.time ? a.time : 1000;
+                const tb = b.time ? b.time : 1000;
+                return (ta > tb) ? 1 : -1;
               }
               // 4️⃣ lineCode: string ascending
               return a.lineCode.localeCompare( b.lineCode );
@@ -55,7 +57,7 @@ export class BusStopTimes {
     if ( fmt === 'IN ARRIVO' ) {
       return undefined;
     }
-    const match = fmt.match( /^(\d+)/ );
+    const match = /^(\d+)/.exec( fmt );
     return match ? Number( match[1] ) : undefined;
   }
 
@@ -63,7 +65,7 @@ export class BusStopTimes {
     if ( fmt === 'IN ARRIVO' ) {
       return undefined;
     }
-    const match = fmt.match( /\((\d+)'?\)/ );
+    const match = /\((\d+)'?\)/.exec( fmt );
     return match ? Number( match[1] ) : undefined;
   }
 }

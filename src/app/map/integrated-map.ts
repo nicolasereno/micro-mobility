@@ -28,6 +28,7 @@ import {FeatureLike} from 'ol/Feature';
 import {GeoJSON} from 'ol/format';
 import Text from 'ol/style/Text';
 import {BusesActions} from '../actions/buses.actions';
+import {VehiclesActions} from '../actions/vehicles.actions';
 
 @Component( {
   selector: 'app-integrated-map',
@@ -40,7 +41,8 @@ export class IntegratedMap implements OnInit {
   private readonly vehiclesVectorSource = new VectorSource();
   private readonly positionVectorSource = new VectorSource();
 
-  private stops: VectorLayer | null = null;
+  private stopsLayer: VectorLayer | null = null;
+  private vehiclesLayer: VectorLayer | null = null;
 
   private store = inject( Store )
 
@@ -56,7 +58,7 @@ export class IntegratedMap implements OnInit {
   private birdVisible = this.store.selectSignal<boolean>( operatorVisible( 'bird' ) );
   private minimumCharge = this.store.selectSignal<number>( minimumCharge );
 
-  private stopCode = this.store.selectSignal<string|undefined>(stopCode);
+  private stopCode = this.store.selectSignal<string | undefined>( stopCode );
 
   private readonly view: View;
 
@@ -72,10 +74,10 @@ export class IntegratedMap implements OnInit {
       this.vehiclesVectorSource.addFeatures( this.toFeatures( this.vehicles().bird.filter( v => this.minimumCharge() <= v.percentageCharge ).filter( v => this.birdVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
     } );
 
-    effect(() => {
-      console.log(this.stopCode());
-      this.stops!.changed();
-    });
+    effect( () => {
+      console.log( this.stopCode() );
+      this.stopsLayer!.changed();
+    } );
 
     effect( () => {
       this.view.animate( {
@@ -167,7 +169,12 @@ export class IntegratedMap implements OnInit {
     const openstreetmap = new MapboxVectorLayer( {
       styleUrl: 'openstreetmap.json',
     } );
-    this.stops = new VectorLayer( {
+    this.vehiclesLayer = new VectorLayer( {
+      source: this.vehiclesVectorSource,
+      minZoom: 13,
+      maxZoom: 24,
+    } );
+    this.stopsLayer = new VectorLayer( {
       source: new VectorSource( {
         url: 'stops.json',
         format: new GeoJSON(),
@@ -175,7 +182,7 @@ export class IntegratedMap implements OnInit {
       minZoom: 16,
       maxZoom: 24,
     } );
-    this.stops.setStyle( (
+    this.stopsLayer.setStyle( (
       feature: FeatureLike,
       resolution: number
     ): Style => {
@@ -186,8 +193,8 @@ export class IntegratedMap implements OnInit {
           text: String( code ),
           font: 'bold 12px Arial',
           padding: [2, 2, 2, 2],
-          fill: this.stopCode() === code ? new Fill( {color: '#FF6A00'} ) :  new Fill( {color: '#8F001D'} ),
-          backgroundFill: this.stopCode() === code ? new Fill( {color: '#8F001D'} ) :  new Fill( {color: '#FF6A00'} ),
+          fill: this.stopCode() === code ? new Fill( {color: '#FF6A00'} ) : new Fill( {color: '#8F001D'} ),
+          backgroundFill: this.stopCode() === code ? new Fill( {color: '#8F001D'} ) : new Fill( {color: '#FF6A00'} ),
           backgroundStroke: new Stroke( {
             color: this.stopCode() === code ? '#FF6A00' : '#8F001D',
             width: this.stopCode() === code ? 4 : 2
@@ -198,25 +205,34 @@ export class IntegratedMap implements OnInit {
       } );
     } );
     map.on( 'singleclick', ( event: MapBrowserEvent ) => {
-      const feature = map.forEachFeatureAtPixel(
+      const stopFeature = map.forEachFeatureAtPixel(
         event.pixel,
         ( f: FeatureLike ) => f,
         {
-          layerFilter: ( layer ) => layer === this.stops
+          layerFilter: ( layer ) => layer === this.stopsLayer
         }
       );
-      if ( feature ) {
-        const code = feature.get( 'c' );
+      if ( stopFeature ) {
+        const code = stopFeature.get( 'c' );
         this.store.dispatch( BusesActions.loadBuses( {stopCode: code} ) );
+      }
+
+      const vehicleFeature = map.forEachFeatureAtPixel(
+        event.pixel,
+        ( f: FeatureLike ) => f,
+        {
+          layerFilter: ( layer ) => layer === this.vehiclesLayer
+        }
+      );
+      if ( vehicleFeature ) {
+        const operator = vehicleFeature.get( 'operator' ) as SharingOperator;
+        const id = vehicleFeature.get( 'vehicleId' ) as string;
+        this.store.dispatch( VehiclesActions.selectVehicle( {operator, id} ) );
       }
     } );
     map.addLayer( openstreetmap );
-    map.addLayer( this.stops );
-    map.addLayer( new VectorLayer( {
-      source: this.vehiclesVectorSource,
-      minZoom: 13,
-      maxZoom: 24,
-    } ) );
+    map.addLayer( this.stopsLayer );
+    map.addLayer( this.vehiclesLayer );
     map.addLayer( new VectorLayer( {
       source: this.positionVectorSource,
     } ) );

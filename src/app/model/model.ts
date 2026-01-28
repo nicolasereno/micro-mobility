@@ -8,7 +8,9 @@ export type Vehicle = {
   operator: SharingOperator;
   vehicleType: VehicleType;
   percentageCharge: number;
+  estimatedDistance: number;
   coordinates: Coordinate;
+  rentalUri: string | undefined;
 }
 
 export type BusTimesInfo = {

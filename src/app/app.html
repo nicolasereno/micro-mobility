@@ -18,10 +18,10 @@
   hideMultipleSelectionIndicator="true"
   multiple
 >
-  <mat-button-toggle value="scooter" (click)="toggleScooter()" checked>
+  <mat-button-toggle value="scooter" (click)="toggleScooter()" (keydown)="toggleScooter()" checked>
     Scooter
   </mat-button-toggle>
-  <mat-button-toggle value="bicycle" (click)="toggleBicycle()" checked>
+  <mat-button-toggle value="bicycle" (click)="toggleBicycle()" (keydown)="toggleBicycle()" checked>
     Bicycle
   </mat-button-toggle>
 </mat-button-toggle-group>
@@ -34,7 +34,7 @@
   hideMultipleSelectionIndicator="true"
   multiple
 >
-  <mat-button-toggle value="lime" (click)="toggleOperator('lime')" checked>Lime</mat-button-toggle>
-  <mat-button-toggle value="eggs" (click)="toggleOperator('bird')" checked>Bird</mat-button-toggle>
-  <mat-button-toggle value="sugar" (click)="toggleOperator('dott')" checked>Dott</mat-button-toggle>
+  <mat-button-toggle value="lime" (click)="toggleOperator('lime')" (keydown)="toggleOperator('lime')" checked>Lime</mat-button-toggle>
+  <mat-button-toggle value="eggs" (click)="toggleOperator('bird')" (keydown)="toggleOperator('bird')" checked>Bird</mat-button-toggle>
+  <mat-button-toggle value="sugar" (click)="toggleOperator('dott')" (keydown)="toggleOperator('dott')" checked>Dott</mat-button-toggle>
 </mat-button-toggle-group>

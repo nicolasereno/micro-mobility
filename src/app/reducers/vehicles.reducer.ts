@@ -7,6 +7,7 @@ export const vehiclesFeatureKey = 'vehicles';
 export interface VehiclesState {
   vehicles: Record<SharingOperator, Vehicle[]>;
   vehiclesVisible: Record<SharingOperator, boolean>;
+  selectedVehicle: Vehicle | undefined;
   error: string | null
 }
 
@@ -17,6 +18,7 @@ export const initialState: VehiclesState = {
   vehiclesVisible: {
     'dott': true, 'lime': true, 'bird': true
   },
+  selectedVehicle: undefined,
   error: null,
 };
 
@@ -47,6 +49,14 @@ export const vehiclesReducer = createReducer(
       ...state.vehiclesVisible,
       [operator]: !state.vehiclesVisible[operator]
     }
+  }) ),
+  on( VehiclesActions.selectVehicle, ( state, {id, operator} ) => ({
+    ...state,
+    selectedVehicle: state.vehicles[operator].find( v => v.id === id ) ?? undefined
+  }) ),
+  on( VehiclesActions.unselectVehicle, ( state, {} ) => ({
+    ...state,
+    selectedVehicle: undefined
   }) )
 );
 

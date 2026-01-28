@@ -50,7 +50,9 @@ export class GeneralBikeShareFeed {
           operator: operator,
           vehicleType: v.form_factor as VehicleType,
           coordinates: fromLonLat( [v.lon, v.lat] ),
-          percentageCharge: 100 * v.current_fuel_percent
+          percentageCharge: +(100 * v.current_fuel_percent).toFixed( 0 ),
+          estimatedDistance: +((v.current_range_meters ?? 0) / 1000).toFixed( 1 ),
+          rentalUri: v.rental_uris?.android
         } as Vehicle) );
       } )
     );
@@ -77,6 +79,7 @@ interface VehicleFromFeed {
   current_fuel_percent: number;
   is_reserved: boolean;
   is_disabled: boolean;
+  rental_uris?: Record<'android' | 'ios', string>;
 }
 
 interface VehicleTypeFromFeed {

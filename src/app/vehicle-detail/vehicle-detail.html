@@ -1,0 +1,40 @@
+@let vehicle = selectedVehicle();
+@if (vehicle) {
+  <mat-card class="panel">
+    <!-- HEADER -->
+    <div class="panel-header">
+      <div class="header-left">
+        <img src="./icons/{{ vehicle.vehicleType }}.svg" alt="Vehicle type">
+        <div class="header-text">
+          <div class="title">OPERATOR: {{ vehicle.operator }}</div>
+          <div class="subtitle">ID: {{ vehicle.id }}</div>
+        </div>
+      </div>
+      @if (vehicle.rentalUri) {
+        <a matButton="filled" href="{{vehicle.rentalUri}}" target="_blank">RIDE</a>
+      }
+    </div>
+    <mat-divider></mat-divider>
+
+    <div class="lines">
+      <div class="line">
+        <div class="line-left">
+          <div class="line-info">
+            <div class="line-name">ESTIMATED DISTANCE</div>
+            <div class="line-meta">km</div>
+          </div>
+        </div>
+        <div class="line-time">{{ vehicle.estimatedDistance }}</div>
+      </div>
+      <div class="line">
+        <div class="line-left">
+          <div class="line-info">
+            <div class="line-name">ESTIMATED CHARGE</div>
+            <div class="line-meta">percentage</div>
+          </div>
+        </div>
+        <div class="line-time">{{ vehicle.percentageCharge }}%</div>
+      </div>
+    </div>
+  </mat-card>
+}

@@ -2,8 +2,8 @@ import {Component, effect, inject, OnInit} from '@angular/core';
 import {IntegratedMap} from './map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
-import {bicycleVisible, busWaitTimes, minimumCharge, scooterVisible} from './reducers';
-import {BusTimesInfo, SharingOperator} from './model/model';
+import {bicycleVisible, busWaitTimes, minimumCharge, scooterVisible, selectedVehicle} from './reducers';
+import {BusTimesInfo, SharingOperator, Vehicle} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatButton} from '@angular/material/button';
@@ -13,6 +13,7 @@ import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {BusWaitTime} from './bus-wait-time/bus-wait-time';
 import {BottomSheetState} from './bottom-sheet-state';
 import {BusesActions} from './actions/buses.actions';
+import {VehicleDetail} from './vehicle-detail/vehicle-detail';
 
 @Component( {
   selector: 'app-root',
@@ -30,6 +31,7 @@ export class App implements OnInit {
   protected minimumCharge = this.store.selectSignal<number>( minimumCharge );
 
   protected busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
+  protected selectedVehicle = this.store.selectSignal<Vehicle | undefined>( selectedVehicle )
 
   private readonly visibility = toSignal(
     fromEvent( document, 'visibilitychange' )
@@ -43,12 +45,17 @@ export class App implements OnInit {
       console.log( 'OPEN: ' + this.bottomSheetState.isOpen() );
       if ( !this.bottomSheetState.isOpen() ) {
         this.store.dispatch( BusesActions.clearBuses() );
+        this.store.dispatch( VehiclesActions.unselectVehicle() );
       }
     } );
     effect( () => {
       if ( this.busWaitTimes() && !this.bottomSheetState.isOpen() ) {
-        console.log( 'bus wait time arrived...' + JSON.stringify( this.busWaitTimes() ) );
         this.bottomSheetState.open( BusWaitTime );
+      }
+    } );
+    effect( () => {
+      if ( this.selectedVehicle() && !this.bottomSheetState.isOpen() ) {
+        this.bottomSheetState.open( VehicleDetail );
       }
     } );
     interval( 5000 )

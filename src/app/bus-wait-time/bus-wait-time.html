@@ -1,42 +1,27 @@
-<mat-card class="panel">
-  <!-- HEADER -->
-  <div class="panel-header">
-    <div class="header-left">
-      <a matButton aria-label="Refresh" (click)="reloadData()">
-        <mat-icon>refresh</mat-icon>
-      </a>
-
-      <div class="header-text">
-        <div class="title">{{ stopName() }}</div>
-        <div class="subtitle">ID {{ stopCode() }}</div>
-      </div>
-    </div>
-  </div>
-
-  <mat-divider></mat-divider>
-
-  @if (busWaitTimes()) {
-    <div class="lines">
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar><img class="card-header-icon" src="./icons/stop.svg" (click)="reloadData()" alt="Aggiorna i dati"></div>
+    <mat-card-title>{{ stopName() }}</mat-card-title>
+    <mat-card-subtitle>CODICE: <strong>{{ stopCode() }}</strong></mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
       @for (time of busWaitTimes(); track time) {
-        <div class="line">
-          <div class="line-left">
-            <div class="line-badge">{{ time.lineCode }}</div>
-
-            <div class="line-info">
-              <div class="line-name">{{ time.direction }}</div>
-              @if (time.distance) {
-                <div class="line-meta">
-                  {{ time.distance }} fermate
-                </div>
-              }
-            </div>
-          </div>
-
-          @if (time.arriving || time.time) {
-            <div class="line-time">{{ time.arriving ? 'Ora' : time.time + ' min' }}</div>
+        <mat-list-item>
+          <h3 class="line-code" matListItemIcon>{{ time.lineCode }}</h3>
+          <div matListItemTitle>{{ time.direction }}</div>
+          @if (time.distance) {
+            <div matListItemLine>{{ time.distance }} fermate</div>
+          } @else {
+            <div matListItemLine>A capolinea</div>
           }
-        </div>
+          @if (time.arriving || time.time) {
+            <div matListItemMeta>
+              <h3>{{ time.arriving ? 'Ora' : time.time + ' min' }}</h3>
+            </div>
+          }
+        </mat-list-item>
       }
-    </div>
-  }
+    </mat-list>
+  </mat-card-content>
 </mat-card>

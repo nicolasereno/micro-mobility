@@ -6,6 +6,27 @@ html, body {
   overscroll-behavior-y: contain;
 }
 
+.mat-mdc-card {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.mat-mdc-bottom-sheet-container {
+  overflow: hidden !important;
+  max-height: none !important;
+  display: flex;
+  flex-direction: column;
+}
+
 .mat-bottom-sheet-container {
-  padding: 0 !important;
+  padding-top: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.mat-mdc-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }

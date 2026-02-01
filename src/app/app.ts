@@ -1,5 +1,5 @@
 import {Component, effect, inject, OnInit} from '@angular/core';
-import {IntegratedMap} from './map/integrated-map';
+import {IntegratedMap} from './components/map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
 import {bicycleVisible, busWaitTimes, minimumCharge, scooterVisible, selectedVehicle} from './reducers';
@@ -10,10 +10,10 @@ import {MatButton} from '@angular/material/button';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {filter, fromEvent, interval, map} from 'rxjs';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
-import {BusWaitTime} from './bus-wait-time/bus-wait-time';
-import {BottomSheetState} from './bottom-sheet-state';
+import {BusWaitTime} from './components/bus-wait-time/bus-wait-time';
+import {BottomSheetState} from './services/bottom-sheet-state';
 import {BusesActions} from './actions/buses.actions';
-import {VehicleDetail} from './vehicle-detail/vehicle-detail';
+import {VehicleDetail} from './components/vehicle-detail/vehicle-detail';
 
 @Component( {
   selector: 'app-root',

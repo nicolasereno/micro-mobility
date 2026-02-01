@@ -14,21 +14,21 @@ import {
   position,
   scooterVisible,
   stopCode
-} from '../reducers';
-import {SharingOperator, Vehicle, VehicleType} from '../model/model';
+} from '../../reducers';
+import {SharingOperator, Vehicle, VehicleType} from '../../model/model';
 import {Fill, Icon, Stroke, Style} from 'ol/style';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import {Circle, Geometry, Point} from 'ol/geom';
-import {MapsActions} from '../actions/maps.actions';
+import {MapsActions} from '../../actions/maps.actions';
 import {Coordinate} from 'ol/coordinate';
-import {initialState} from '../reducers/maps.reducer';
+import {initialState} from '../../reducers/maps.reducer';
 import CircleStyle from 'ol/style/Circle';
 import {FeatureLike} from 'ol/Feature';
 import {GeoJSON} from 'ol/format';
 import Text from 'ol/style/Text';
-import {BusesActions} from '../actions/buses.actions';
-import {VehiclesActions} from '../actions/vehicles.actions';
+import {BusesActions} from '../../actions/buses.actions';
+import {VehiclesActions} from '../../actions/vehicles.actions';
 
 @Component( {
   selector: 'app-integrated-map',

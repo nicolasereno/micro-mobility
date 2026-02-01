@@ -10,6 +10,8 @@
           "/favicon.ico",
           "/index.csr.html",
           "/index.html",
+          "/omf.json",
+          "/openstreetmap.json",
           "/manifest.webmanifest",
           "/*.css",
           "/*.js"

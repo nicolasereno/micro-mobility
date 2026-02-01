@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {map, Observable, retry} from 'rxjs';
-import {BusStopTimesInfo, BusTimesInfo} from './model/model';
+import {BusStopTimesInfo, BusTimesInfo} from '../model/model';
 
 @Injectable({
   providedIn: 'root',

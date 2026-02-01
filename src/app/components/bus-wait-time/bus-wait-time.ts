@@ -1,9 +1,9 @@
 import {Component, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {BusTimesInfo} from '../model/model';
-import {busWaitTimes, stopCode, stopName} from '../reducers';
+import {BusTimesInfo} from '../../model/model';
+import {busWaitTimes, stopCode, stopName} from '../../reducers';
 import {MatList, MatListItem} from '@angular/material/list';
-import {BusesActions} from '../actions/buses.actions';
+import {BusesActions} from '../../actions/buses.actions';
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from '@angular/material/card';
 
 @Component( {

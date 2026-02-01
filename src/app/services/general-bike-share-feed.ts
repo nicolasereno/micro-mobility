@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {SharingOperator, Vehicle, VehicleType} from './model/model';
+import {SharingOperator, Vehicle, VehicleType} from '../model/model';
 import {concatMap, forkJoin, map} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {fromLonLat} from 'ol/proj';

@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {BusStopTimes} from '../bus-stop-times';
+import {BusStopTimes} from '../services/bus-stop-times';
 import {catchError, map, mergeMap, of} from 'rxjs';
 import {BusesActions} from '../actions/buses.actions';
 

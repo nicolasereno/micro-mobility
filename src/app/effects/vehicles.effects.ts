@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
-import {GeneralBikeShareFeed} from '../general-bike-share-feed';
+import {GeneralBikeShareFeed} from '../services/general-bike-share-feed';
 import {VehiclesActions} from '../actions/vehicles.actions';
 import {catchError, map, mergeMap, of} from 'rxjs';
 

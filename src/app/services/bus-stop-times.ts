@@ -30,7 +30,7 @@ export class BusStopTimes {
           return {
             stopCode: stopId,
             stopName: result.name as string,
-            arrivals: result.realtimeinfo.map((a: any) => ({
+            arrivals: (result.realtimeinfo??[]).map((a: any) => ({
               lineCode: a.line as string,
               direction: a.linedest as string,
               atStart: a.ultfermata === 1,

@@ -6,7 +6,7 @@
     <mat-card-subtitle>CODICE: <strong>{{ stopCode() }}</strong></mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    @if (busWaitTimes() && busWaitTimes()?.length > 0) {
+    @if (busWaitTimes() && busWaitTimes()!.length > 0) {
       <mat-list>
         @for (time of busWaitTimes(); track time) {
           <mat-list-item>
@@ -26,7 +26,7 @@
         }
       </mat-list>
     } @else {
-
+      <p>Nessun dato disponibile</p>
     }
   </mat-card-content>
 </mat-card>

@@ -11,7 +11,7 @@ app-root {
 
 .reloadData {
   position: absolute;
-  top: 0.5em;
+  bottom: 0.5em;
   left: 0.5em;
 }
 
@@ -24,7 +24,7 @@ app-root {
 .toggleOperator {
   position: absolute;
   left: 0.5em;
-  bottom: 0.5em;
+  top: 0.5em;
 }
 
 .slider-wrapper {

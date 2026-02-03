@@ -3,10 +3,10 @@ import {IntegratedMap} from './components/map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
 import {bicycleVisible, busWaitTimes, minimumCharge, scooterVisible, selectedVehicle} from './reducers';
-import {BusTimesInfo, SharingOperator, Vehicle} from './model/model';
+import {BusTimesInfo, SHARING_OPERATORS, SharingOperator, Vehicle} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
-import {MatButton} from '@angular/material/button';
+import {MatFabButton} from '@angular/material/button';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {filter, fromEvent, interval, map} from 'rxjs';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
@@ -14,11 +14,13 @@ import {BusWaitTime} from './components/bus-wait-time/bus-wait-time';
 import {BottomSheetState} from './services/bottom-sheet-state';
 import {BusesActions} from './actions/buses.actions';
 import {VehicleDetail} from './components/vehicle-detail/vehicle-detail';
+import {MatIcon} from '@angular/material/icon';
 
 @Component( {
   selector: 'app-root',
-  imports: [IntegratedMap, MatButtonToggleGroup, MatButtonToggle, MatButton, MatSlider, MatSliderThumb],
+  imports: [IntegratedMap, MatIcon, MatButtonToggleGroup, MatButtonToggle, MatSlider, MatSliderThumb, MatFabButton],
   templateUrl: './app.html',
+  standalone: true,
   styleUrl: './app.css'
 } )
 export class App implements OnInit {
@@ -32,6 +34,8 @@ export class App implements OnInit {
 
   protected busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
   protected selectedVehicle = this.store.selectSignal<Vehicle | undefined>( selectedVehicle )
+
+  protected readonly SHARING_OPERATORS = SHARING_OPERATORS;
 
   private readonly visibility = toSignal(
     fromEvent( document, 'visibilitychange' )
@@ -80,9 +84,9 @@ export class App implements OnInit {
   }
 
   protected reloadData() {
-    this.store.dispatch( VehiclesActions.loadVehicles( {operator: 'dott'} ) );
-    this.store.dispatch( VehiclesActions.loadVehicles( {operator: 'lime'} ) );
-    this.store.dispatch( VehiclesActions.loadVehicles( {operator: 'bird'} ) );
+    for ( const operator of SHARING_OPERATORS ) {
+      this.store.dispatch( VehiclesActions.loadVehicles( {operator} ) );
+    }
   }
 
   protected zoomToPosition() {

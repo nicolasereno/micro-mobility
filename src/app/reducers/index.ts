@@ -30,7 +30,6 @@ export const stopCode = ( state: AppState ) => state[busesFeatureKey].stopCode;
 export const stopName = ( state: AppState ) => state[busesFeatureKey].stopName;
 export const busWaitTimes = ( state: AppState ) => state[busesFeatureKey].arrivals;
 export const selectedVehicle = ( state: AppState ) => state[vehiclesFeatureKey].selectedVehicle;
-
 export const operatorVisible = ( operator: SharingOperator ) =>
   createSelector(
     operatorsVisible,

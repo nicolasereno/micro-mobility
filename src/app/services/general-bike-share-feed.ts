@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {SharingOperator, Vehicle, VehicleType} from '../model/model';
+import {GBFS_URLS, SharingOperator, Vehicle, VehicleType} from '../model/model';
 import {concatMap, forkJoin, map} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {fromLonLat} from 'ol/proj';
@@ -13,7 +13,6 @@ export class GeneralBikeShareFeed {
 
   public loadOperatorVehicles( operator: SharingOperator ) {
 
-    // @ts-ignore
     return this.http.get<any>( GBFS_URLS[operator] ).pipe(
       // 1️ extract feeds
       map( res => res.data.en.feeds as Feed[] ),
@@ -58,12 +57,6 @@ export class GeneralBikeShareFeed {
     );
   }
 }
-
-const GBFS_URLS: Record<SharingOperator, string> = {
-  dott: 'https://gbfs.api.ridedott.com/public/v2/rome/gbfs.json',
-  bird: 'https://mds.bird.co/gbfs/v2/public/rome/gbfs.json',
-  lime: 'https://data.lime.bike/api/partners/v2/gbfs/rome/gbfs.json'
-};
 
 interface Feed {
   name: string;

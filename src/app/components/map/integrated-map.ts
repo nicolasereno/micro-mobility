@@ -10,12 +10,12 @@ import {
   mapCenter,
   mapZoom,
   minimumCharge,
-  operatorVisible,
+  operatorsVisible,
   position,
   scooterVisible,
   stopCode
 } from '../../reducers';
-import {SharingOperator, Vehicle, VehicleType} from '../../model/model';
+import {PRIMARY_COLORS, SECONDARY_COLORS, SHARING_OPERATORS, SharingOperator, Vehicle, VehicleType} from '../../model/model';
 import {Fill, Icon, Stroke, Style} from 'ol/style';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
@@ -35,11 +35,13 @@ import {VehiclesActions} from '../../actions/vehicles.actions';
   imports: [],
   templateUrl: './integrated-map.html',
   styleUrl: './integrated-map.css',
+  standalone: true
 } )
 export class IntegratedMap implements OnInit {
 
   private readonly vehiclesVectorSource = new VectorSource();
   private readonly positionVectorSource = new VectorSource();
+  private readonly view: View;
 
   private stopsLayer: VectorLayer | null = null;
   private vehiclesLayer: VectorLayer | null = null;
@@ -53,14 +55,10 @@ export class IntegratedMap implements OnInit {
   private accuracy = this.store.selectSignal<number | undefined>( accuracy );
   private bicycleVisible = this.store.selectSignal<boolean>( bicycleVisible );
   private scooterVisible = this.store.selectSignal<boolean>( scooterVisible );
-  private limeVisible = this.store.selectSignal<boolean>( operatorVisible( 'lime' ) );
-  private dottVisible = this.store.selectSignal<boolean>( operatorVisible( 'dott' ) );
-  private birdVisible = this.store.selectSignal<boolean>( operatorVisible( 'bird' ) );
+  private operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
   private minimumCharge = this.store.selectSignal<number>( minimumCharge );
-
   private stopCode = this.store.selectSignal<string | undefined>( stopCode );
 
-  private readonly view: View;
 
   constructor() {
     this.view = new View( {
@@ -69,9 +67,12 @@ export class IntegratedMap implements OnInit {
     } );
     effect( () => {
       this.vehiclesVectorSource.clear();
-      this.vehiclesVectorSource.addFeatures( this.toFeatures( this.vehicles().dott.filter( v => this.minimumCharge() <= v.percentageCharge ).filter( v => this.dottVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
-      this.vehiclesVectorSource.addFeatures( this.toFeatures( this.vehicles().lime.filter( v => this.minimumCharge() <= v.percentageCharge ).filter( v => this.limeVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
-      this.vehiclesVectorSource.addFeatures( this.toFeatures( this.vehicles().bird.filter( v => this.minimumCharge() <= v.percentageCharge ).filter( v => this.birdVisible() && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
+      for ( const operator of SHARING_OPERATORS ) {
+        this.vehiclesVectorSource
+          .addFeatures( this.toFeatures( this.vehicles()[operator]
+            .filter( v => this.minimumCharge() <= v.percentageCharge )
+            .filter( v => this.operatorsVisible()[operator] && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
+      }
     } );
 
     effect( () => {
@@ -146,10 +147,10 @@ export class IntegratedMap implements OnInit {
           image: new CircleStyle( {
             radius: 6,
             fill: new Fill( {
-              color: this.fillColors[feat.getProperties()['operator'] as SharingOperator],
+              color: PRIMARY_COLORS[feat.getProperties()['operator'] as SharingOperator],
             } ),
             stroke: new Stroke( {
-              color: this.borderColors[feat.getProperties()['operator'] as SharingOperator],
+              color: SECONDARY_COLORS[feat.getProperties()['operator'] as SharingOperator],
               width: 1,
             } )
           } ),
@@ -182,28 +183,33 @@ export class IntegratedMap implements OnInit {
       minZoom: 16,
       maxZoom: 24,
     } );
-    this.stopsLayer.setStyle( (
+    const busStopStyle = (
       feature: FeatureLike,
-      resolution: number
+      ignored: number
     ): Style => {
       const code = feature.get( 'c' ) ?? '';
+      const isSelectedCode = this.stopCode() === code;
+      const secondary = '#fff';
+      const primary = '#000';
+      const margin = 2;
 
       return new Style( {
         text: new Text( {
           text: String( code ),
           font: 'bold 12px Arial',
-          padding: [2, 2, 2, 2],
-          fill: this.stopCode() === code ? new Fill( {color: '#FF6A00'} ) : new Fill( {color: '#8F001D'} ),
-          backgroundFill: this.stopCode() === code ? new Fill( {color: '#8F001D'} ) : new Fill( {color: '#FF6A00'} ),
-          backgroundStroke: new Stroke( {
-            color: this.stopCode() === code ? '#FF6A00' : '#8F001D',
-            width: this.stopCode() === code ? 4 : 2
-          } ),
+          padding: [margin, 0, 0, margin],
           textAlign: 'center',
-          textBaseline: 'middle'
+          textBaseline: 'middle',
+          fill: isSelectedCode ? new Fill( {color: secondary} ) : new Fill( {color: primary} ),
+          backgroundFill: isSelectedCode ? new Fill( {color: primary} ) : new Fill( {color: secondary} ),
+          backgroundStroke: new Stroke( {
+            color: isSelectedCode ? secondary : primary,
+            width: margin
+          } )
         } )
       } );
-    } );
+    };
+    this.stopsLayer.setStyle( busStopStyle );
     map.on( 'singleclick', ( event: MapBrowserEvent ) => {
       const stopFeature = map.forEachFeatureAtPixel(
         event.pixel,
@@ -239,29 +245,18 @@ export class IntegratedMap implements OnInit {
     this.store.dispatch( MapsActions.zoomToPosition() );
   }
 
-  private readonly fillColors: Record<SharingOperator, string> = {
-    lime: '#C0F008',
-    bird: '#CED7E0',
-    dott: '#00A8E9'
-  };
-  private readonly borderColors: Record<SharingOperator, string> = {
-    lime: '#08DE08',
-    bird: '#2DCFF1',
-    dott: '#E0120A'
-  };
-
   private styleForElement( operator: SharingOperator, vehicleType: VehicleType, chargePercentage: number ) {
 
     return [
-      this.createSvgProgressStyle( chargePercentage, this.fillColors[operator] ),
+      this.createSvgProgressStyle( chargePercentage, PRIMARY_COLORS[operator] ),
       new Style( {
         image: new Icon( {
           src: `/icons/${vehicleType}.svg`,
-          scale: 0.6,
+          scale: 0.9,
           anchor: [0.5, 0.5],
           anchorXUnits: 'fraction',
           anchorYUnits: 'fraction',
-          color: this.borderColors[operator]
+          color: SECONDARY_COLORS[operator]
         } ),
       } )];
   }
@@ -306,7 +301,6 @@ export class IntegratedMap implements OnInit {
     const backgroundColor = options?.backgroundColor ?? '#ffffff';
     const fillColor = options?.fillColor ?? '#ffffff';
 
-    // Example: simple location pin path
     return `
 <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <!-- Background circle -->

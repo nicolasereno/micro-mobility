@@ -8,17 +8,10 @@ import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} f
 
 @Component( {
   selector: 'app-bus-wait-time',
-  imports: [
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardSubtitle,
-    MatCardContent,
-    MatList,
-    MatListItem
-  ],
+  imports: [MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatList, MatListItem],
   templateUrl: './bus-wait-time.html',
   styleUrl: './bus-wait-time.css',
+  standalone: true
 } )
 export class BusWaitTime {
 

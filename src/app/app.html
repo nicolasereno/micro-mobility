@@ -1,8 +1,12 @@
 <app-integrated-map/>
 
-<button class="zoomToPosition" matButton="filled" (click)="zoomToPosition()">Center Map</button>
+<button class="zoomToPosition" matFab="filled" (click)="zoomToPosition()" aria-details="Center map">
+  <mat-icon>center_focus_strong</mat-icon>
+</button>
 
-<button class="reloadData" matButton="filled" (click)="reloadData()">Reload</button>
+<button class="reloadData" matFab="filled" (click)="reloadData()" aria-details="Reload Data">
+  <mat-icon>sync</mat-icon>
+</button>
 
 <div class="slider-wrapper">
   <mat-slider min="0" max="100" step="1">
@@ -19,10 +23,10 @@
   multiple
 >
   <mat-button-toggle value="scooter" (click)="toggleScooter()" (keydown)="toggleScooter()" checked>
-    Scooter
+    <img src="/icons/scooter_black.svg" alt="Scooter"/>
   </mat-button-toggle>
   <mat-button-toggle value="bicycle" (click)="toggleBicycle()" (keydown)="toggleBicycle()" checked>
-    Bicycle
+    <img src="/icons/bicycle_black.svg" alt="Bicycle"/>
   </mat-button-toggle>
 </mat-button-toggle-group>
 
@@ -34,7 +38,9 @@
   hideMultipleSelectionIndicator="true"
   multiple
 >
-  <mat-button-toggle value="lime" (click)="toggleOperator('lime')" (keydown)="toggleOperator('lime')" checked>Lime</mat-button-toggle>
-  <mat-button-toggle value="eggs" (click)="toggleOperator('bird')" (keydown)="toggleOperator('bird')" checked>Bird</mat-button-toggle>
-  <mat-button-toggle value="sugar" (click)="toggleOperator('dott')" (keydown)="toggleOperator('dott')" checked>Dott</mat-button-toggle>
+  @for (operator of SHARING_OPERATORS; track operator) {
+    <mat-button-toggle value="lime" (click)="toggleOperator(operator)" (keydown)="toggleOperator(operator)" checked>
+      <img [src]="`/icons/${operator}.svg`" [alt]="operator"/>
+    </mat-button-toggle>
+  }
 </mat-button-toggle-group>

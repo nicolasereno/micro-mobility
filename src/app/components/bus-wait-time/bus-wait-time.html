@@ -1,7 +1,8 @@
 <mat-card>
   <mat-card-header>
-    <div mat-card-avatar><img class="card-header-icon" src="./icons/stop.svg" (click)="reloadData()"
-                              alt="Aggiorna i dati"></div>
+    <div mat-card-avatar>
+      <img class="card-header-icon" src="./icons/stop.svg" (click)="reloadData()" (keydown)="reloadData()" alt="Aggiorna i dati">
+    </div>
     <mat-card-title>{{ stopName() }}</mat-card-title>
     <mat-card-subtitle>CODICE: <strong>{{ stopCode() }}</strong></mat-card-subtitle>
   </mat-card-header>

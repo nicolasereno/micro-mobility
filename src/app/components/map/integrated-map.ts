@@ -252,7 +252,7 @@ export class IntegratedMap implements OnInit {
       new Style( {
         image: new Icon( {
           src: `/icons/${vehicleType}.svg`,
-          scale: 0.9,
+          scale: 0.8,
           anchor: [0.5, 0.5],
           anchorXUnits: 'fraction',
           anchorYUnits: 'fraction',

@@ -2,6 +2,7 @@ import {createReducer, on} from '@ngrx/store';
 import {MapsActions} from '../actions/maps.actions';
 import {Coordinate} from 'ol/coordinate';
 import {fromLonLat} from 'ol/proj';
+import {VehicleType} from '../model/model';
 
 export const mapsFeatureKey = 'maps';
 
@@ -10,8 +11,7 @@ export interface MapsState {
   zoom: number;
   position: Coordinate | undefined;
   accuracy: number | undefined;
-  bicycleVisible: boolean;
-  scooterVisible: boolean;
+  vehicleTypesVisible: Record<VehicleType, boolean>;
   minimumCharge: number;
 }
 
@@ -20,8 +20,7 @@ export const initialState: MapsState = {
   zoom: 12,
   position: undefined,
   accuracy: undefined,
-  bicycleVisible: true,
-  scooterVisible: true,
+  vehicleTypesVisible: {bicycle: true, scooter: true},
   minimumCharge: 10
 };
 
@@ -37,13 +36,9 @@ export const mapsReducer = createReducer(
     position: coordinates,
     accuracy: accuracy,
   }) ),
-  on( MapsActions.toggleBicycle, ( state, {} ) => ({
+  on( MapsActions.toggleVehicleType, ( state, {vehicleType} ) => ({
     ...state,
-    bicycleVisible: !state.bicycleVisible,
-  }) ),
-  on( MapsActions.toggleScooter, ( state, {} ) => ({
-    ...state,
-    scooterVisible: !state.scooterVisible,
+    vehicleTypesVisible: {...state.vehicleTypesVisible, [vehicleType]: !state.vehicleTypesVisible[vehicleType]},
   }) ),
   on( MapsActions.minimumCharge, ( state, {minimumCharge} ) => ({
     ...state,

@@ -2,8 +2,8 @@ import {Component, effect, inject, OnInit} from '@angular/core';
 import {IntegratedMap} from './components/map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
-import {bicycleVisible, busWaitTimes, minimumCharge, scooterVisible, selectedVehicle} from './reducers';
-import {BusTimesInfo, SHARING_OPERATORS, SharingOperator, Vehicle} from './model/model';
+import {busWaitTimes, minimumCharge, operatorsError, selectedVehicle} from './reducers';
+import {BusTimesInfo, SHARING_OPERATORS, SharingOperator, Vehicle, VEHICLE_TYPES, VehicleType} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatFabButton} from '@angular/material/button';
@@ -15,10 +15,11 @@ import {BottomSheetState} from './services/bottom-sheet-state';
 import {BusesActions} from './actions/buses.actions';
 import {VehicleDetail} from './components/vehicle-detail/vehicle-detail';
 import {MatIcon} from '@angular/material/icon';
+import {NgClass} from '@angular/common';
 
 @Component( {
   selector: 'app-root',
-  imports: [IntegratedMap, MatIcon, MatButtonToggleGroup, MatButtonToggle, MatSlider, MatSliderThumb, MatFabButton],
+  imports: [IntegratedMap, MatIcon, MatButtonToggleGroup, MatButtonToggle, MatSlider, MatSliderThumb, MatFabButton, NgClass],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.css'
@@ -28,12 +29,11 @@ export class App implements OnInit {
   private readonly store = inject( Store );
   private readonly bottomSheetState = inject( BottomSheetState );
 
-  protected bicycleVisible = this.store.selectSignal<boolean>( bicycleVisible );
-  protected scooterVisible = this.store.selectSignal<boolean>( scooterVisible );
   protected minimumCharge = this.store.selectSignal<number>( minimumCharge );
 
   protected busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
   protected selectedVehicle = this.store.selectSignal<Vehicle | undefined>( selectedVehicle )
+  protected operatorsError = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsError );
 
   protected readonly SHARING_OPERATORS = SHARING_OPERATORS;
 
@@ -46,7 +46,6 @@ export class App implements OnInit {
 
   constructor() {
     effect( () => {
-      console.log( 'OPEN: ' + this.bottomSheetState.isOpen() );
       if ( !this.bottomSheetState.isOpen() ) {
         this.store.dispatch( BusesActions.clearBuses() );
         this.store.dispatch( VehiclesActions.unselectVehicle() );
@@ -93,12 +92,8 @@ export class App implements OnInit {
     this.store.dispatch( MapsActions.zoomToPosition() );
   }
 
-  protected toggleScooter() {
-    this.store.dispatch( MapsActions.toggleScooter() );
-  }
-
-  protected toggleBicycle() {
-    this.store.dispatch( MapsActions.toggleBicycle() )
+  protected toggleVehicleType( vehicleType: VehicleType ) {
+    this.store.dispatch( MapsActions.toggleVehicleType( {vehicleType} ) );
   }
 
   protected toggleOperator( operator: SharingOperator ) {
@@ -108,4 +103,6 @@ export class App implements OnInit {
   filterMinimumCharge( minimumCharge: number ) {
     this.store.dispatch( MapsActions.minimumCharge( {minimumCharge} ) );
   }
+
+  protected readonly VEHICLE_TYPES = VEHICLE_TYPES;
 }

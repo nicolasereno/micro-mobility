@@ -3,18 +3,7 @@ import {Feature, MapBrowserEvent, View} from 'ol';
 import {MapboxVectorLayer} from 'ol-mapbox-style';
 import Map from 'ol/Map';
 import {Store} from '@ngrx/store';
-import {
-  accuracy,
-  allVehicles,
-  bicycleVisible,
-  mapCenter,
-  mapZoom,
-  minimumCharge,
-  operatorsVisible,
-  position,
-  scooterVisible,
-  stopCode
-} from '../../reducers';
+import {accuracy, allVehicles, mapCenter, mapZoom, minimumCharge, operatorsVisible, position, stopCode, vehicleTypesVisible} from '../../reducers';
 import {PRIMARY_COLORS, SECONDARY_COLORS, SHARING_OPERATORS, SharingOperator, Vehicle, VehicleType} from '../../model/model';
 import {Fill, Icon, Stroke, Style} from 'ol/style';
 import VectorSource from 'ol/source/Vector';
@@ -40,7 +29,7 @@ import {VehiclesActions} from '../../actions/vehicles.actions';
 export class IntegratedMap implements OnInit {
 
   private readonly vehiclesVectorSource = new VectorSource();
-  private readonly positionVectorSource = new VectorSource();
+  private readonly positionVectorSource = new VectorSource( {attributions: '© OSM contributors | OpenFreeMap'} );
   private readonly view: View;
 
   private stopsLayer: VectorLayer | null = null;
@@ -53,8 +42,7 @@ export class IntegratedMap implements OnInit {
   private zoom = this.store.selectSignal<number>( mapZoom );
   private position = this.store.selectSignal<Coordinate | undefined>( position );
   private accuracy = this.store.selectSignal<number | undefined>( accuracy );
-  private bicycleVisible = this.store.selectSignal<boolean>( bicycleVisible );
-  private scooterVisible = this.store.selectSignal<boolean>( scooterVisible );
+  private vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible );
   private operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
   private minimumCharge = this.store.selectSignal<number>( minimumCharge );
   private stopCode = this.store.selectSignal<string | undefined>( stopCode );
@@ -71,7 +59,7 @@ export class IntegratedMap implements OnInit {
         this.vehiclesVectorSource
           .addFeatures( this.toFeatures( this.vehicles()[operator]
             .filter( v => this.minimumCharge() <= v.percentageCharge )
-            .filter( v => this.operatorsVisible()[operator] && (v.vehicleType === 'bicycle' && this.bicycleVisible() || v.vehicleType === 'scooter' && this.scooterVisible()) ) ) );
+            .filter( v => this.operatorsVisible()[operator] && (this.vehicleTypesVisible()[v.vehicleType]) ) ) );
       }
     } );
 

@@ -22,12 +22,12 @@
   hideMultipleSelectionIndicator="true"
   multiple
 >
-  <mat-button-toggle value="scooter" (click)="toggleScooter()" (keydown)="toggleScooter()" checked>
-    <img src="/icons/scooter_black.svg" alt="Scooter"/>
-  </mat-button-toggle>
-  <mat-button-toggle value="bicycle" (click)="toggleBicycle()" (keydown)="toggleBicycle()" checked>
-    <img src="/icons/bicycle_black.svg" alt="Bicycle"/>
-  </mat-button-toggle>
+
+  @for (vehicleType of VEHICLE_TYPES; track vehicleType) {
+    <mat-button-toggle [value]="vehicleType" (click)="toggleVehicleType(vehicleType)" (keydown)="toggleVehicleType(vehicleType)" checked>
+      <mat-icon [svgIcon]="'vehicle-types:' + vehicleType"></mat-icon>
+    </mat-button-toggle>
+  }
 </mat-button-toggle-group>
 
 
@@ -40,7 +40,7 @@
 >
   @for (operator of SHARING_OPERATORS; track operator) {
     <mat-button-toggle value="lime" (click)="toggleOperator(operator)" (keydown)="toggleOperator(operator)" checked>
-      <img [src]="`/icons/${operator}.svg`" [alt]="operator"/>
+      <mat-icon [svgIcon]="'operators:' + operator" [ngClass]="{'data-error': operatorsError()[operator]}"></mat-icon>
     </mat-button-toggle>
   }
 </mat-button-toggle-group>

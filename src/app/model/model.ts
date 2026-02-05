@@ -27,7 +27,8 @@ export const SECONDARY_COLORS: Record<SharingOperator, string> = {
 
 export type SharingOperator = typeof SHARING_OPERATORS[number];
 
-export type VehicleType = 'bicycle' | 'scooter';
+export const VEHICLE_TYPES = ['bicycle', 'scooter'] as const;
+export type VehicleType = typeof VEHICLE_TYPES[number];
 
 export type Vehicle = {
   id: string;

@@ -23,7 +23,7 @@ import {VehiclesActions} from '../../actions/vehicles.actions';
   selector: 'app-integrated-map',
   imports: [],
   templateUrl: './integrated-map.html',
-  styleUrl: './integrated-map.css',
+  styleUrl: './integrated-map.scss',
   standalone: true
 } )
 export class IntegratedMap implements OnInit {

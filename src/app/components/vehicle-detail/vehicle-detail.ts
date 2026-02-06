@@ -4,12 +4,13 @@ import {OPERATORS_OPEN_LINK, Vehicle} from '../../model/model';
 import {selectedVehicle} from '../../reducers';
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from '@angular/material/card';
 import {MatButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
 
 @Component( {
   selector: 'app-vehicle-detail',
-  imports: [MatCard, MatButton, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatCardActions],
+  imports: [MatCard, MatButton, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatCardActions, MatIcon],
   templateUrl: './vehicle-detail.html',
-  styleUrl: './vehicle-detail.css',
+  styleUrl: './vehicle-detail.scss',
   standalone: true
 } )
 export class VehicleDetail {

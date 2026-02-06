@@ -11,6 +11,7 @@ import {provideServiceWorker} from '@angular/service-worker';
 import {MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from '@angular/platform-browser';
 
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -28,8 +29,7 @@ export const appConfig: ApplicationConfig = {
 
 export function provideMatIconRegistry() {
   return {
-    provide: MatIconRegistry,
-    useFactory: () => {
+    provide: MatIconRegistry, useFactory: () => {
       const http = inject( HttpClient );
       const sanitizer = inject( DomSanitizer );
       const document = inject( DOCUMENT );

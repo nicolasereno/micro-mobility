@@ -4,7 +4,6 @@
   "cli": {
     "packageManager": "npm",
     "schematicCollections": [
-      "angular-eslint",
       "@ngrx/schematics"
     ]
   },
@@ -13,10 +12,11 @@
     "micro-mobility": {
       "projectType": "application",
       "schematics": {
-        "@schematics/angular:class": {
+        "@schematics/angular:component": {
+          "style": "scss",
           "skipTests": true
         },
-        "@schematics/angular:component": {
+        "@schematics/angular:class": {
           "skipTests": true
         },
         "@schematics/angular:directive": {
@@ -47,6 +47,7 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
@@ -54,9 +55,7 @@
               }
             ],
             "styles": [
-              "src/material-theme.scss",
-              "src/styles.css",
-              "node_modules/ol/ol.css"
+              "src/styles.scss"
             ]
           },
           "configurations": {
@@ -65,7 +64,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "2MB"
+                  "maximumError": "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -95,15 +94,6 @@
             }
           },
           "defaultConfiguration": "development"
-        },
-        "lint": {
-          "builder": "@angular-eslint/builder:lint",
-          "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
-          }
         }
       }
     }

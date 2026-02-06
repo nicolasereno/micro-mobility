@@ -5,12 +5,13 @@ import {busWaitTimes, stopCode, stopName} from '../../reducers';
 import {MatList, MatListItem} from '@angular/material/list';
 import {BusesActions} from '../../actions/buses.actions';
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from '@angular/material/card';
+import {MatIcon} from '@angular/material/icon';
 
 @Component( {
   selector: 'app-bus-wait-time',
-  imports: [MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatList, MatListItem],
+  imports: [MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatList, MatListItem, MatIcon],
   templateUrl: './bus-wait-time.html',
-  styleUrl: './bus-wait-time.css',
+  styleUrl: './bus-wait-time.scss',
   standalone: true
 } )
 export class BusWaitTime {

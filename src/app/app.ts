@@ -22,7 +22,7 @@ import {NgClass} from '@angular/common';
   imports: [IntegratedMap, MatIcon, MatButtonToggleGroup, MatButtonToggle, MatSlider, MatSliderThumb, MatFabButton, NgClass],
   templateUrl: './app.html',
   standalone: true,
-  styleUrl: './app.css'
+  styleUrl: './app.scss'
 } )
 export class App implements OnInit {
 

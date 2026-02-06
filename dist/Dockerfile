@@ -7,11 +7,11 @@ RUN rm -rf /usr/share/nginx/html/*
 
 # Copy custom Nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy cert files
+COPY ssl /usr/share/nginx/ssl
 
 # Copy built Angular app to Nginx directory
-COPY ../dist/micro-mobility/browser /usr/share/nginx/html
-
-COPY ./ssl /usr/share/nginx/ssl
+COPY micro-mobility/browser /usr/share/nginx/html
 
 
 # Expose port 443

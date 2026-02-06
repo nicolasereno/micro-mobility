@@ -1,8 +1,7 @@
 import {isDevMode} from '@angular/core';
-import {ActionReducerMap, createSelector, MetaReducer} from '@ngrx/store';
+import {ActionReducerMap, MetaReducer} from '@ngrx/store';
 import {vehiclesFeatureKey, vehiclesReducer, VehiclesState} from './vehicles.reducer';
 import {mapsFeatureKey, mapsReducer, MapsState} from './maps.reducer';
-import {VehicleType} from '../model/model';
 import {busesFeatureKey, busesReducer, BusesState} from './buses.reducer';
 
 export interface AppState {
@@ -31,10 +30,5 @@ export const busWaitTimes = ( state: AppState ) => state[busesFeatureKey].arriva
 export const selectedVehicle = ( state: AppState ) => state[vehiclesFeatureKey].selectedVehicle;
 export const vehicleTypesVisible = ( state: AppState ) => state[mapsFeatureKey].vehicleTypesVisible;
 
-export const vehicleTypeVisible = ( vehicleType: VehicleType ) =>
-  createSelector(
-    vehicleTypesVisible,
-    vehicleTypes => vehicleTypes[vehicleType]
-  );
 
 export const metaReducers: MetaReducer<AppState>[] = isDevMode() ? [] : [];

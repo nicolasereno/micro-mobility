@@ -6,12 +6,15 @@
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+// Import the generated color palettes
+@import './app/styles/roma-theme.scss';
+
 html {
   height: 100%;
   @include mat.theme((
     color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
+      primary: $primary-palette,
+      tertiary: $tertiary-palette,
     ),
     typography: Roboto,
     density: 0,
@@ -33,5 +36,32 @@ body {
 
   // Reset the user agent margin.
   margin: 0;
+  width: 100vw;
+  height: 100vh;
+}
+/* You can add global styles to this file, and also import other style files */
+
+.mat-mdc-card {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.mat-mdc-bottom-sheet-container {
+  overflow: hidden !important;
+  max-height: none !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.mat-bottom-sheet-container {
+  padding-top: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.mat-mdc-card {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }

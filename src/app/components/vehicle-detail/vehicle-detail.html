@@ -2,7 +2,9 @@
 @if (vehicle) {
   <mat-card>
     <mat-card-header>
-      <div mat-card-avatar><img class="card-header-icon" src="./icons/{{ vehicle.vehicleType }}.svg" alt="Vehicle type"></div>
+      <div mat-card-avatar>
+        <mat-icon class="card-header-icon" [svgIcon]="'vehicle-types:' + vehicle.vehicleType" alt="Vehicle type"></mat-icon>
+      </div>
       <mat-card-title>OPERATORE: {{ vehicle.operator }}</mat-card-title>
       <mat-card-subtitle>TIPO: <strong>{{ vehicle.vehicleType }}</strong></mat-card-subtitle>
     </mat-card-header>
@@ -10,8 +12,8 @@
       <h4>CARICA: {{ vehicle.percentageCharge }}%</h4>
       <h4>AUTONOMIA: {{ vehicle.estimatedDistance }}km</h4>
     </mat-card-content>
-      <mat-card-actions align="end">
-        <a matButton="outlined" (click)="openApp(vehicle)">SBLOCCA</a>
-      </mat-card-actions>
+    <mat-card-actions align="end">
+      <a matButton="outlined" (click)="openApp(vehicle)">SBLOCCA</a>
+    </mat-card-actions>
   </mat-card>
 }

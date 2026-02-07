@@ -45,6 +45,10 @@ export function provideMatIconRegistry() {
         'vehicle-types',
         sanitizer.bypassSecurityTrustResourceUrl( '/icons/vehicle-types.svg' )
       );
+      iconRegistry.addSvgIconSetInNamespace(
+        'symbols',
+        sanitizer.bypassSecurityTrustResourceUrl( '/icons/symbols.svg' )
+      );
 
       return iconRegistry;
     }

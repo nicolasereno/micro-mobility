@@ -1,10 +1,28 @@
-import {Component, effect, inject, OnInit} from '@angular/core';
+import {Component, effect, inject, OnInit, untracked} from '@angular/core';
 import {Feature, MapBrowserEvent, View} from 'ol';
 import {MapboxVectorLayer} from 'ol-mapbox-style';
 import Map from 'ol/Map';
 import {Store} from '@ngrx/store';
-import {accuracy, allVehicles, mapCenter, mapZoom, minimumCharge, operatorsVisible, position, stopCode, vehicleTypesVisible} from '../../reducers';
-import {PRIMARY_COLORS, SECONDARY_COLORS, SHARING_OPERATORS, SharingOperator, Vehicle, VehicleType} from '../../model/model';
+import {
+  accuracy,
+  allVehicles,
+  center,
+  minimumCharge,
+  operatorsVisible,
+  position,
+  stopCode,
+  vehicleTypesVisible,
+  zoom,
+  zoomToPositionTime
+} from '../../reducers';
+import {
+  PRIMARY_COLORS,
+  SECONDARY_COLORS,
+  SHARING_OPERATORS,
+  SharingOperator,
+  Vehicle,
+  VehicleType
+} from '../../model/model';
 import {Fill, Icon, Stroke, Style} from 'ol/style';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
@@ -37,15 +55,16 @@ export class IntegratedMap implements OnInit {
 
   private store = inject( Store )
 
-  private vehicles = this.store.selectSignal<Record<SharingOperator, Vehicle[]>>( allVehicles );
-  private center = this.store.selectSignal<Coordinate>( mapCenter );
-  private zoom = this.store.selectSignal<number>( mapZoom );
-  private position = this.store.selectSignal<Coordinate | undefined>( position );
-  private accuracy = this.store.selectSignal<number | undefined>( accuracy );
-  private vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible );
-  private operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
-  private minimumCharge = this.store.selectSignal<number>( minimumCharge );
-  private stopCode = this.store.selectSignal<string | undefined>( stopCode );
+  private readonly vehicles = this.store.selectSignal<Record<SharingOperator, Vehicle[]>>( allVehicles );
+  private readonly position = this.store.selectSignal<Coordinate | undefined>( position );
+  private readonly zoom = this.store.selectSignal<number | undefined>( zoom );
+  private readonly center = this.store.selectSignal<Coordinate | undefined>( center );
+  private readonly accuracy = this.store.selectSignal<number | undefined>( accuracy );
+  private readonly zoomToPositionTime = this.store.selectSignal<number | undefined>( zoomToPositionTime );
+  private readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible );
+  private readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
+  private readonly minimumCharge = this.store.selectSignal<number>( minimumCharge );
+  private readonly stopCode = this.store.selectSignal<string | undefined>( stopCode );
 
 
   constructor() {
@@ -54,12 +73,14 @@ export class IntegratedMap implements OnInit {
       center: initialState.position
     } );
     effect( () => {
-      this.vehiclesVectorSource.clear();
-      for ( const operator of SHARING_OPERATORS ) {
-        this.vehiclesVectorSource
-          .addFeatures( this.toFeatures( this.vehicles()[operator]
-            .filter( v => this.minimumCharge() <= v.percentageCharge )
-            .filter( v => this.operatorsVisible()[operator] && (this.vehicleTypesVisible()[v.vehicleType]) ) ) );
+      if (this.operatorsVisible()) {
+        this.vehiclesVectorSource.clear();
+        for (const operator of SHARING_OPERATORS) {
+          this.vehiclesVectorSource
+            .addFeatures(this.toFeatures(this.vehicles()[operator]
+              .filter(v => this.minimumCharge() <= v.percentageCharge)
+              .filter(v => this.operatorsVisible()[operator] && (this.vehicleTypesVisible()[v.vehicleType]))));
+        }
       }
     } );
 
@@ -69,19 +90,15 @@ export class IntegratedMap implements OnInit {
     } );
 
     effect( () => {
-      this.view.animate( {
-        center: [this.center()[0], this.center()[1]],
-        zoom: this.zoom(),
-        duration: 500
-      } )
+      if (this.zoomToPositionTime()) {
+        this.zoomToCurrentPosition();
+      }
     } );
 
     effect( () => {
       if ( this.position() === undefined ) {
+        this.positionVectorSource.clear();
         return;
-      }
-      if ( this.positionVectorSource.getFeatures().length === 0 ) {
-        this.store.dispatch( MapsActions.zoomToPosition() );
       }
       this.positionVectorSource.clear();
       const feature = new Feature( {
@@ -114,6 +131,14 @@ export class IntegratedMap implements OnInit {
       } ) )
       this.positionVectorSource.addFeature( positionAccuracy );
     } )
+  }
+
+  private changePosition() {
+    const zoom = this.view.getZoom();
+    const center = this.view.getCenter();
+    if (center && zoom) {
+      this.store.dispatch(MapsActions.changeMapPosition({center, zoom}))
+    }
   }
 
   private toFeatures( vv: Vehicle[] ): Feature<Geometry>[] {
@@ -230,7 +255,18 @@ export class IntegratedMap implements OnInit {
     map.addLayer( new VectorLayer( {
       source: this.positionVectorSource,
     } ) );
-    this.store.dispatch( MapsActions.zoomToPosition() );
+    // First zoom on latest zoom position
+    if (this.center() && this.zoom()) {
+      this.view.animate( {
+        center: [this.center()![0], this.center()![1]],
+        zoom: this.zoom()!,
+        duration: 500
+      } )
+    }
+    // Listen to positions change to store in local storage
+    map.on('moveend', () => {
+      this.changePosition();
+    });
   }
 
   private styleForElement( operator: SharingOperator, vehicleType: VehicleType, chargePercentage: number ) {
@@ -318,5 +354,14 @@ export class IntegratedMap implements OnInit {
 
   private svgToDataUrl( svg: string ): string {
     return `data:image/svg+xml;utf8,${encodeURIComponent( svg )}`;
+  }
+
+  private zoomToCurrentPosition() {
+    const untrackedPosition = untracked(() => this.position());
+    this.view.animate( {
+      center: [untrackedPosition![0], untrackedPosition![1]],
+      zoom: 18,
+      duration: 500
+    } )
   }
 }

@@ -1,4 +1,3 @@
-
 // Include theming for Angular Material with `mat.theme()`.
 // This Sass mixin will define CSS variables that are used for styling Angular Material
 // components according to the Material 3 design spec.
@@ -7,7 +6,12 @@
 @use '@angular/material' as mat;
 
 // Import the generated color palettes
-@import './app/styles/roma-theme.scss';
+@use './app/styles/roma-theme.scss' as *;
+
+html, body {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: auto;
+}
 
 html {
   height: 100%;
@@ -39,6 +43,7 @@ body {
   width: 100vw;
   height: 100vh;
 }
+
 /* You can add global styles to this file, and also import other style files */
 
 .mat-mdc-card {

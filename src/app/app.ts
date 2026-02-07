@@ -2,7 +2,14 @@ import {Component, effect, inject, OnInit} from '@angular/core';
 import {IntegratedMap} from './components/map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
-import {busWaitTimes, minimumCharge, operatorsError, selectedVehicle} from './reducers';
+import {
+  busWaitTimes,
+  minimumCharge,
+  operatorsError, operatorsVisible,
+  positionAvailable,
+  selectedVehicle,
+  vehicleTypesVisible
+} from './reducers';
 import {BusTimesInfo, SHARING_OPERATORS, SharingOperator, Vehicle, VEHICLE_TYPES, VehicleType} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
@@ -15,27 +22,30 @@ import {BottomSheetState} from './services/bottom-sheet-state';
 import {BusesActions} from './actions/buses.actions';
 import {VehicleDetail} from './components/vehicle-detail/vehicle-detail';
 import {MatIcon} from '@angular/material/icon';
-import {NgClass} from '@angular/common';
+import {MatBadge} from '@angular/material/badge';
 
 @Component( {
   selector: 'app-root',
-  imports: [IntegratedMap, MatIcon, MatButtonToggleGroup, MatButtonToggle, MatSlider, MatSliderThumb, MatFabButton, NgClass],
+  imports: [IntegratedMap, MatIcon, MatButtonToggleGroup, MatButtonToggle, MatSlider, MatSliderThumb, MatFabButton, MatBadge],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.scss'
 } )
 export class App implements OnInit {
 
+  protected readonly VEHICLE_TYPES = VEHICLE_TYPES;
+  protected readonly SHARING_OPERATORS = SHARING_OPERATORS;
+
   private readonly store = inject( Store );
   private readonly bottomSheetState = inject( BottomSheetState );
 
-  protected minimumCharge = this.store.selectSignal<number>( minimumCharge );
-
-  protected busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
-  protected selectedVehicle = this.store.selectSignal<Vehicle | undefined>( selectedVehicle )
-  protected operatorsError = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsError );
-
-  protected readonly SHARING_OPERATORS = SHARING_OPERATORS;
+  protected readonly minimumCharge = this.store.selectSignal<number>( minimumCharge );
+  protected readonly positionAvailable = this.store.selectSignal<boolean>( positionAvailable );
+  protected readonly busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
+  protected readonly selectedVehicle = this.store.selectSignal<Vehicle | undefined>( selectedVehicle )
+  protected readonly operatorsError = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsError );
+  protected readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible);
+  protected readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
 
   private readonly visibility = toSignal(
     fromEvent( document, 'visibilitychange' )
@@ -104,5 +114,4 @@ export class App implements OnInit {
     this.store.dispatch( MapsActions.minimumCharge( {minimumCharge} ) );
   }
 
-  protected readonly VEHICLE_TYPES = VEHICLE_TYPES;
 }

@@ -1,6 +1,7 @@
 <app-integrated-map/>
 
-<button class="zoomToPosition" matFab="filled" (click)="zoomToPosition()" aria-details="Center map">
+<button class="zoomToPosition" matFab="filled" (click)="zoomToPosition()" aria-details="Center map"
+        [disabled]="!positionAvailable()">
   <mat-icon>center_focus_strong</mat-icon>
 </button>
 
@@ -10,7 +11,7 @@
 
 <div class="slider-wrapper">
   <mat-slider min="0" max="100" step="1">
-    <input value="10" matSliderThumb (valueChange)="filterMinimumCharge($event)">
+    <input [value]="minimumCharge()" matSliderThumb (valueChange)="filterMinimumCharge($event)">
   </mat-slider>
 </div>
 <h3>{{ minimumCharge() }} %</h3>
@@ -24,7 +25,10 @@
 >
 
   @for (vehicleType of VEHICLE_TYPES; track vehicleType) {
-    <mat-button-toggle [value]="vehicleType" (click)="toggleVehicleType(vehicleType)" (keydown)="toggleVehicleType(vehicleType)" checked>
+    <mat-button-toggle [checked]="vehicleTypesVisible()[vehicleType]"
+                       [value]="vehicleType"
+                       (click)="toggleVehicleType(vehicleType)"
+                       (keydown)="toggleVehicleType(vehicleType)" checked>
       <mat-icon [svgIcon]="'vehicle-types:' + vehicleType"></mat-icon>
     </mat-button-toggle>
   }
@@ -39,8 +43,14 @@
   multiple
 >
   @for (operator of SHARING_OPERATORS; track operator) {
-    <mat-button-toggle value="lime" (click)="toggleOperator(operator)" (keydown)="toggleOperator(operator)" checked>
-      <mat-icon [svgIcon]="'operators:' + operator" [ngClass]="{'data-error': operatorsError()[operator]}"></mat-icon>
+    <mat-button-toggle [value]="operator"
+                       (click)="toggleOperator(operator)"
+                       (keydown)="toggleOperator(operator)"
+                       [checked]="operatorsVisible()[operator]">
+      <mat-icon [svgIcon]="'operators:' + operator"></mat-icon>
+      @if (operatorsError() && operatorsError()[operator]) {
+        <span matBadge="!" matBadgeColor="warn"></span>
+      }
     </mat-button-toggle>
   }
 </mat-button-toggle-group>

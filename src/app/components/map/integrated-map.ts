@@ -9,7 +9,7 @@ import {
   center,
   minimumCharge,
   operatorsVisible,
-  position,
+  position, selectedVehicleId,
   stopCode,
   vehicleTypesVisible,
   zoom,
@@ -50,7 +50,7 @@ import {take} from 'rxjs';
 export class IntegratedMap implements OnInit {
 
   private readonly vehiclesVectorSource = new VectorSource();
-  private readonly positionVectorSource = new VectorSource({attributions: '© OSM contributors | OpenFreeMap'});
+  private readonly positionVectorSource = new VectorSource();
   private readonly view: View;
 
   private stopsLayer: VectorLayer | null = null;
@@ -70,7 +70,8 @@ export class IntegratedMap implements OnInit {
   private readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>(vehicleTypesVisible);
   private readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>(operatorsVisible);
   private readonly minimumCharge = this.store.selectSignal<number>(minimumCharge);
-  private readonly stopCode = this.store.selectSignal<string | undefined>(stopCode);
+  private readonly selectedStopCode = this.store.selectSignal<string | undefined>(stopCode);
+  private readonly selectedVehicleId = this.store.selectSignal<string | undefined>(selectedVehicleId);
 
 
   constructor() {
@@ -91,8 +92,13 @@ export class IntegratedMap implements OnInit {
     });
 
     effect(() => {
-      console.log(this.stopCode());
+      console.debug(this.selectedStopCode());
       this.stopsLayer!.changed();
+    });
+
+    effect(() => {
+      console.debug(this.selectedVehicleId());
+      this.vehiclesLayer!.changed();
     });
 
     effect(() => {
@@ -102,40 +108,23 @@ export class IntegratedMap implements OnInit {
     });
 
     effect(() => {
+      this.positionVectorSource.clear();
       if (this.position() === undefined) {
-        this.positionVectorSource.clear();
         return;
       }
-      this.positionVectorSource.clear();
+
       const feature = new Feature({
         geometry: new Point(
           this.position()!
         )
       });
-      feature.setStyle(new Style({
-        image: new CircleStyle({
-          radius: 6,
-          fill: new Fill({
-            color: 'rgba(255, 255, 0, 0.6)',
-          }),
-          stroke: new Stroke({
-            color: '#000000',
-            width: 1,
-          })
-        }),
-      }));
+      const positionAccuracyFeature = new Feature(new Circle(this.position()!, this.accuracy()));
+
+      feature.setStyle(this.positionStyle());
+      positionAccuracyFeature.setStyle(this.accuracyStyle())
+
       this.positionVectorSource.addFeature(feature);
-      const positionAccuracy = new Feature(new Circle(this.position()!, this.accuracy()));
-      positionAccuracy.setStyle(new Style({
-        fill: new Fill({
-          color: 'rgba(255, 255, 0, 0.3)',
-        }),
-        stroke: new Stroke({
-          color: 'rgba(0, 0, 0, 0.6)',
-          width: 0.5,
-        })
-      }))
-      this.positionVectorSource.addFeature(positionAccuracy);
+      this.positionVectorSource.addFeature(positionAccuracyFeature);
     })
   }
 
@@ -158,30 +147,23 @@ export class IntegratedMap implements OnInit {
         vehicleType: v.vehicleType,
         percentageCharge: v.percentageCharge
       });
+      const isSelected = this.selectedVehicleId() === v.id
       feature.setStyle((feat: FeatureLike, res: number) => {
         if (res < 4) {
-          return this.styleForElement(feat.getProperties()['operator'] as SharingOperator, feat.getProperties()['vehicleType'] as VehicleType, feat.getProperties()['percentageCharge'] as number)
+          return this.styleForVehicle(
+            feat.getProperties()['operator'] as SharingOperator,
+            feat.getProperties()['vehicleType'] as VehicleType,
+            feat.getProperties()['percentageCharge'] as number,
+            isSelected)
         }
-        return new Style({
-          image: new CircleStyle({
-            radius: 6,
-            fill: new Fill({
-              color: PRIMARY_COLORS[feat.getProperties()['operator'] as SharingOperator],
-            }),
-            stroke: new Stroke({
-              color: SECONDARY_COLORS[feat.getProperties()['operator'] as SharingOperator],
-              width: 1,
-            })
-          }),
-        })
+        return this.smallStyleForVehicle(feat.getProperties()['operator'] as SharingOperator)
       });
       return feature;
     })
   }
 
-
   ngOnInit(): void {
-    VEHICLE_TYPES.forEach((vehicleType) => this.registry.getNamedSvgIcon(vehicleType, "symbols")
+    [...VEHICLE_TYPES, 'bus'].forEach((vehicleType) => this.registry.getNamedSvgIcon(vehicleType, "symbols")
       .pipe(take(1))
       .subscribe(e => this.symbols[vehicleType] = e.innerHTML))
 
@@ -206,33 +188,9 @@ export class IntegratedMap implements OnInit {
       minZoom: 16,
       maxZoom: 24,
     });
-    const busStopStyle = (
-      feature: FeatureLike,
-      ignored: number
-    ): Style => {
-      const code = feature.get('c') ?? '';
-      const isSelectedCode = this.stopCode() === code;
-      const secondary = '#fff';
-      const primary = '#000';
-      const margin = 2;
+    this.stopsLayer.setStyle(
+      (feature: FeatureLike): Style[] => this.styleForBusStop(feature.get('c') ?? ''));
 
-      return new Style({
-        text: new Text({
-          text: String(code),
-          font: 'bold 12px Arial',
-          padding: [margin, 0, 0, margin],
-          textAlign: 'center',
-          textBaseline: 'middle',
-          fill: isSelectedCode ? new Fill({color: secondary}) : new Fill({color: primary}),
-          backgroundFill: isSelectedCode ? new Fill({color: primary}) : new Fill({color: secondary}),
-          backgroundStroke: new Stroke({
-            color: isSelectedCode ? secondary : primary,
-            width: margin
-          })
-        })
-      });
-    };
-    this.stopsLayer.setStyle(busStopStyle);
     map.on('singleclick', (event: MapBrowserEvent) => {
       const stopFeature = map.forEachFeatureAtPixel(
         event.pixel,
@@ -279,10 +237,48 @@ export class IntegratedMap implements OnInit {
     });
   }
 
-  private styleForElement(operator: SharingOperator, vehicleType: VehicleType, chargePercentage: number) {
+  private styleForBusStop(code: string) {
+    const isSelected = this.selectedStopCode() === code;
+    const isPreferred = "71170" === code;
+    const primary = this.getThemeColor('--mat-sys-inverse-primary', true);
+    const secondary = this.getThemeColor('--mat-sys-primary', true);
+    const tertiary = this.getThemeColor('--mat-sys-tertiary', true);
+    const template = '<svg width="24px" height="24px" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">' + this.symbols['bus'] + '</svg>';
+    const vars = {
+      primary: isSelected ? primary : (isPreferred ? tertiary : secondary),
+      secondary: isSelected ? (isPreferred ? tertiary : secondary) : primary,
+    };
+    // @ts-ignore
+    const svg = template.replace(/\$\{(\w+)}/g, (_, key) => vars[key]);
+    const url = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+
+    return [
+      new Style({
+        image: new Icon({
+          src: url,
+          scale: 1,
+          anchor: [0.5, 1],
+        }),
+      }),
+      new Style({
+      text: new Text({
+        text: String(code),
+        font: 'bold 12px Arial',
+        textAlign: 'center',
+        textBaseline: 'top',
+        fill: new Fill({color: isSelected ? primary : (isPreferred ? tertiary : secondary)})
+      })
+    })];
+  }
+
+  private styleForVehicle(operator: SharingOperator, vehicleType: VehicleType, chargePercentage: number, isSelected: boolean) {
     const template = '<svg width="24px" height="24px" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">' + this.symbols[vehicleType] + '</svg>';
     const percentage = chargePercentage * 135 / 100;
-    const vars = {arc: percentage, secondary: SECONDARY_COLORS[operator], primary: PRIMARY_COLORS[operator],}
+    const vars = {
+      arc: percentage,
+      secondary: isSelected ? PRIMARY_COLORS[operator] : SECONDARY_COLORS[operator],
+      primary: isSelected ? SECONDARY_COLORS[operator] : PRIMARY_COLORS[operator]
+    }
     // @ts-ignore
     const svg = template.replace(/\$\{(\w+)}/g, (_, key) => vars[key]);
     const url = `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
@@ -294,6 +290,67 @@ export class IntegratedMap implements OnInit {
         anchor: [0.5, 0.5],
       }),
     });
+  }
+
+  private smallStyleForVehicle(sharingOperator: SharingOperator) {
+    return new Style({
+      image: new CircleStyle({
+        radius: 6,
+        fill: new Fill({
+          color: PRIMARY_COLORS[sharingOperator],
+        }),
+        stroke: new Stroke({
+          color: SECONDARY_COLORS[sharingOperator],
+          width: 1,
+        })
+      }),
+    });
+  }
+
+  private accuracyStyle() {
+    const baseColor = this.getThemeColor('--mat-sys-tertiary', true);
+    return new Style({
+      fill: new Fill({
+        color: this.hexToRgba(baseColor, 0.3),
+      }),
+      stroke: new Stroke({
+        color: this.hexToRgba(baseColor, 0.6),
+        width: 0.5,
+      })
+    });
+  }
+
+  private getThemeColor(variable: string, lightColor: boolean) {
+    const [, light, dark] = getComputedStyle(document.documentElement)
+      .getPropertyValue(variable)
+      .trim()
+      .match(/light-dark\(([^,]+),\s*([^)]+)\)/)!;
+
+    return lightColor ? light : dark;
+  }
+
+  private positionStyle() {
+    const baseColor = this.getThemeColor('--mat-sys-tertiary', true);
+    return new Style({
+      image: new CircleStyle({
+        radius: 4,
+        fill: new Fill({
+          color: this.hexToRgba(baseColor, 0.8),
+        }),
+        stroke: new Stroke({
+          color: baseColor,
+          width: 1,
+        })
+      }),
+    });
+  }
+
+  private hexToRgba(hex: string, alpha: number) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 
   private zoomToCurrentPosition() {

@@ -27,6 +27,7 @@ export const stopCode = ( state: AppState ) => state[busesFeatureKey].stopCode;
 export const stopName = ( state: AppState ) => state[busesFeatureKey].stopName;
 export const busWaitTimes = ( state: AppState ) => state[busesFeatureKey].arrivals;
 export const selectedVehicle = ( state: AppState ) => state[vehiclesFeatureKey].selectedVehicle;
+export const selectedVehicleId = ( state: AppState ) => state[vehiclesFeatureKey].selectedVehicle?.id;
 export const vehicleTypesVisible = ( state: AppState ) => state[mapsFeatureKey].vehicleTypesVisible;
 export const center = ( state: AppState ) => state[mapsFeatureKey].center;
 export const zoom = ( state: AppState ) => state[mapsFeatureKey].zoom;

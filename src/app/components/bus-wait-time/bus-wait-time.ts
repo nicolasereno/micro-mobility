@@ -31,7 +31,8 @@ export class BusWaitTime {
   protected togglePreferred( stopCode: string | undefined ) {
     if (this.isPreferred()) {
       this.store.dispatch( BusesActions.removePreferredStop( {stopCode: stopCode!} ) );
+    } else {
+      this.store.dispatch(BusesActions.addPreferredStop({stopCode: stopCode!}));
     }
-    this.store.dispatch( BusesActions.addPreferredStop( {stopCode: stopCode!} ) );
   }
 }

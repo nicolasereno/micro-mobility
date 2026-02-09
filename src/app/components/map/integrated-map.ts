@@ -9,7 +9,9 @@ import {
   center,
   minimumCharge,
   operatorsVisible,
-  position, preferredStops, selectedVehicleId,
+  position,
+  preferredStops,
+  selectedVehicleId,
   stopCode,
   vehicleTypesVisible,
   zoom,
@@ -30,7 +32,6 @@ import VectorLayer from 'ol/layer/Vector';
 import {Circle, Geometry, Point} from 'ol/geom';
 import {MapsActions} from '../../actions/maps.actions';
 import {Coordinate} from 'ol/coordinate';
-import {initialState} from '../../reducers/maps.reducer';
 import CircleStyle from 'ol/style/Circle';
 import {FeatureLike} from 'ol/Feature';
 import {GeoJSON} from 'ol/format';
@@ -76,8 +77,8 @@ export class IntegratedMap implements OnInit {
 
   constructor() {
     this.view = new View({
-      zoom: initialState.zoom,
-      center: initialState.position
+      zoom: this.zoom(),
+      center: this.center()
     });
     effect(() => {
       if (this.operatorsVisible()) {
@@ -223,14 +224,6 @@ export class IntegratedMap implements OnInit {
     map.addLayer(new VectorLayer({
       source: this.positionVectorSource,
     }));
-    // First zoom on latest zoom position
-    if (this.center() && this.zoom()) {
-      this.view.animate({
-        center: [this.center()![0], this.center()![1]],
-        zoom: this.zoom()!,
-        duration: 500
-      })
-    }
     // Listen to positions change to store in local storage
     map.on('moveend', () => {
       this.changePosition();

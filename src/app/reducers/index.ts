@@ -61,7 +61,7 @@ export function storageMetaReducer(
           vehiclesVisible: nextState[vehiclesFeatureKey].vehiclesVisible
         },
         [busesFeatureKey]: {
-          preferredStops: nextState[busesFeatureKey].preferredStops,
+          preferredStops: nextState[busesFeatureKey].preferredStops??[],
         },
         [mapsFeatureKey]: {
           center: nextState[mapsFeatureKey].center,

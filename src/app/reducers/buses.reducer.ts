@@ -6,12 +6,14 @@ export const busesFeatureKey = 'buses';
 
 export interface BusesState {
   stopCode: string | undefined;
+  preferredStops: string[];
   stopName: string | undefined;
   arrivals: BusTimesInfo[] | undefined;
 }
 
 export const initialState: BusesState = {
   stopCode: undefined,
+  preferredStops: [],
   stopName: undefined,
   arrivals: undefined,
 };
@@ -38,6 +40,14 @@ export const busesReducer = createReducer(
     stopCode: undefined,
     stopName: undefined,
     arrivals: undefined
+  }) ),
+  on( BusesActions.addPreferredStop, ( state, {stopCode} ) => ({
+    ...state,
+    preferredStops: [...state.preferredStops.filter( sc => sc !== stopCode ), stopCode]
+  }) ),
+  on( BusesActions.removePreferredStop, ( state, {stopCode} ) => ({
+    ...state,
+    preferredStops: state.preferredStops.filter( sc => sc !== stopCode )
   }) )
 );
 

@@ -6,6 +6,11 @@
   margin-right: 1em;
 }
 
+.preferred-stop {
+  background-color: var(--mat-sys-tertiary) !important;
+  color: var(--mat-sys-on-tertiary) !important;
+}
+
 .line-code {
   margin-right: 0.5em;
 }

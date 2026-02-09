@@ -9,5 +9,7 @@ export const BusesActions = createActionGroup( {
     'Load Buses Success': props<{ times: BusStopTimesInfo }>(),
     'Load Buses Failure': props<{ error: string }>(),
     'Refresh Buses': props<{ stopCode: string }>(),
+    'Add Preferred Stop': props<{ stopCode: string }>(),
+    'Remove Preferred Stop': props<{ stopCode: string }>(),
   }
 } );

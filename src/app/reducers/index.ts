@@ -31,6 +31,7 @@ export const selectedVehicleId = ( state: AppState ) => state[vehiclesFeatureKey
 export const vehicleTypesVisible = ( state: AppState ) => state[mapsFeatureKey].vehicleTypesVisible;
 export const center = ( state: AppState ) => state[mapsFeatureKey].center;
 export const zoom = ( state: AppState ) => state[mapsFeatureKey].zoom;
+export const preferredStops = ( state: AppState ) => state[busesFeatureKey].preferredStops;
 
 export const metaReducers: MetaReducer<AppState>[] = [ storageMetaReducer ];
 

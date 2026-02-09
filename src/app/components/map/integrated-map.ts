@@ -9,7 +9,7 @@ import {
   center,
   minimumCharge,
   operatorsVisible,
-  position, selectedVehicleId,
+  position, preferredStops, selectedVehicleId,
   stopCode,
   vehicleTypesVisible,
   zoom,
@@ -72,7 +72,7 @@ export class IntegratedMap implements OnInit {
   private readonly minimumCharge = this.store.selectSignal<number>(minimumCharge);
   private readonly selectedStopCode = this.store.selectSignal<string | undefined>(stopCode);
   private readonly selectedVehicleId = this.store.selectSignal<string | undefined>(selectedVehicleId);
-
+  private readonly preferredStops = this.store.selectSignal<string[]>(preferredStops);
 
   constructor() {
     this.view = new View({
@@ -239,7 +239,7 @@ export class IntegratedMap implements OnInit {
 
   private styleForBusStop(code: string) {
     const isSelected = this.selectedStopCode() === code;
-    const isPreferred = "71170" === code;
+    const isPreferred = this.preferredStops().indexOf(code) >= 0;
     const primary = this.getThemeColor('--mat-sys-inverse-primary', true);
     const secondary = this.getThemeColor('--mat-sys-primary', true);
     const tertiary = this.getThemeColor('--mat-sys-tertiary', true);

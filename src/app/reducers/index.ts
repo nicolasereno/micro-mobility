@@ -60,7 +60,9 @@ export function storageMetaReducer(
         [vehiclesFeatureKey]: {
           vehiclesVisible: nextState[vehiclesFeatureKey].vehiclesVisible
         },
-        [busesFeatureKey]: {},
+        [busesFeatureKey]: {
+          preferredStops: nextState[busesFeatureKey].preferredStops,
+        },
         [mapsFeatureKey]: {
           center: nextState[mapsFeatureKey].center,
           zoom: nextState[mapsFeatureKey].zoom,

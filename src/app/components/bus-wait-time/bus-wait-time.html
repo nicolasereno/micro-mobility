@@ -2,17 +2,23 @@
   <mat-card-header>
     <div mat-card-avatar>
       <mat-icon
-        [class]="'card-header-icon' + (isPreferred() ? ' preferred-stop' : '')"
+        class="card-header-icon"
         [svgIcon]="'vehicle-types:bus'"
         (click)="reloadData()"
-        (keydown)="reloadData()"></mat-icon>
+        (keydown)="reloadData()">
+      </mat-icon>
     </div>
     <mat-card-title>{{ stopName() }}</mat-card-title>
-    <mat-card-subtitle>CODICE:
-      <strong
-        (click)="togglePreferred(stopCode())"
-        (keydown)="togglePreferred(stopCode())">{{ stopCode() }}</strong>
+    <mat-card-subtitle>
+      CODICE: <strong>{{ stopCode() }}</strong>
     </mat-card-subtitle>
+    <span class="spacer"></span>
+    <button mat-icon-button
+            [class]="(isPreferred() ? ' preferred-stop' : '')"
+            (click)="togglePreferred(stopCode())"
+            (keydown)="togglePreferred(stopCode())">
+      <mat-icon>star</mat-icon>
+    </button>
   </mat-card-header>
   <mat-card-content>
     @if (busWaitTimes() && busWaitTimes()!.length > 0) {

@@ -178,7 +178,7 @@ export class IntegratedMap implements OnInit {
     });
     this.vehiclesLayer = new VectorLayer({
       source: this.vehiclesVectorSource,
-      minZoom: 13,
+      minZoom: 14,
       maxZoom: 24,
     });
     this.stopsLayer = new VectorLayer({

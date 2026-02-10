@@ -33,3 +33,12 @@ mat-list {
 mat-card-content p {
   text-align: center;
 }
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+}
+
+.spacer {
+  flex: 1;
+}

@@ -10,33 +10,30 @@
     <mat-card-subtitle>Modifica in base alle tue preferenze</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content class="settings-content">
-
-    <div class="setting-row">
-      <mat-icon class="setting-icon">battery_charging_full</mat-icon>
-
-      <div class="setting-control">
-        <label class="setting-label" for="minimum-charge">
-          Minimum battery charge (%)
+    <div>
+      <div>
+        <mat-icon>battery_charging_full</mat-icon>
+        <label for="minimum-charge">
+          Minimum battery charge ({{ minimumCharge() }}%)
         </label>
-
+      </div>
+      <div class="slider-container">
         <mat-slider min="0" max="100" step="1">
-          <input [value]="minimumCharge()" matSliderThumb (valueChange)="filterMinimumCharge($event)">
+          <input id="minimum-charge" [value]="minimumCharge()" matSliderThumb (valueChange)="filterMinimumCharge($event)">
         </mat-slider>
-
-
-        <span class="value-label">
-          {{ minimumCharge() }}%
-        </span>
       </div>
     </div>
 
-    <!-- Follow GPS Positions Toggle -->
-    <div class="setting-row">
-      <mat-icon class="setting-icon">gps_fixed</mat-icon>
-
-      <mat-slide-toggle [checked]="followGps()" (change)="toggleFollowGps()">
-        Follow GPS positions
-      </mat-slide-toggle>
+    <div>
+      <div>
+        <mat-icon>gps_fixed</mat-icon>
+        <label for="gps-toggle">
+          Follow GPS positions
+        </label>
+      </div>
+      <div>
+        <mat-slide-toggle id="gps-toggle" [checked]="followGps()" (change)="toggleFollowGps()"></mat-slide-toggle>
+      </div>
     </div>
 
   </mat-card-content>

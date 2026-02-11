@@ -2,37 +2,23 @@
   background-color: var(--mat-sys-primary);
   color: var(--mat-sys-on-primary);
   border-radius: 50%;
-  padding: 1em;
+  padding: 0.8em;
   margin-right: 1em;
 }
 
-.settings-content {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.setting-row {
+mat-card-header {
   display: flex;
   align-items: center;
-  gap: 12px;
 }
 
-.setting-icon {
-  color: #3f51b5;
+.settings-content {
+  margin-top: 1em;
+}
+.slider-container {
+  display: flex;
+  align-items: center;
 }
 
-.setting-control {
-  flex: 1;
-}
-
-.setting-label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-.value-label {
-  font-size: 12px;
-  opacity: 0.7;
+mat-slider {
+  width: 100%;
 }

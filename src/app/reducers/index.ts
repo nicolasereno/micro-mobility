@@ -32,45 +32,48 @@ export const vehicleTypesVisible = ( state: AppState ) => state[mapsFeatureKey].
 export const center = ( state: AppState ) => state[mapsFeatureKey].center;
 export const zoom = ( state: AppState ) => state[mapsFeatureKey].zoom;
 export const preferredStops = ( state: AppState ) => state[busesFeatureKey].preferredStops;
+export const followGps = ( state: AppState ) => state[mapsFeatureKey].followGps;
 
-export const metaReducers: MetaReducer<AppState>[] = [ storageMetaReducer ];
+export const metaReducers: MetaReducer<AppState>[] = [storageMetaReducer];
 
 export function storageMetaReducer(
   reducer: ActionReducer<AppState>
 ): ActionReducer<AppState> {
-  return (state, action) => {
+  return ( state, action ) => {
     const STORAGE_KEY = 'micro-mobility-data';
 
     // 🔄 Restore state on app startup
-    if (action.type === INIT || action.type === UPDATE) {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
+    if ( action.type === INIT || action.type === UPDATE ) {
+      const stored = localStorage.getItem( STORAGE_KEY );
+      if ( stored ) {
         try {
-          return { ...state??{}, ...JSON.parse(stored) };
-        } catch {}
+          return {...state ?? {}, ...JSON.parse( stored )};
+        } catch {
+        }
       }
     }
 
     // Run normal reducers
-    const nextState = reducer(state, action);
+    const nextState = reducer( state, action );
 
     // 💾 Persist only selected slices
-    if (nextState) {
+    if ( nextState ) {
       const mapSliceToStore = {
         [vehiclesFeatureKey]: {
           vehiclesVisible: nextState[vehiclesFeatureKey].vehiclesVisible
         },
         [busesFeatureKey]: {
-          preferredStops: nextState[busesFeatureKey].preferredStops??[],
+          preferredStops: nextState[busesFeatureKey].preferredStops ?? [],
         },
         [mapsFeatureKey]: {
           center: nextState[mapsFeatureKey].center,
           zoom: nextState[mapsFeatureKey].zoom,
           vehicleTypesVisible: nextState[mapsFeatureKey].vehicleTypesVisible,
-          minimumCharge: nextState[mapsFeatureKey].minimumCharge
+          minimumCharge: nextState[mapsFeatureKey].minimumCharge,
+          followGps: nextState[mapsFeatureKey].followGps,
         },
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(mapSliceToStore));
+      localStorage.setItem( STORAGE_KEY, JSON.stringify( mapSliceToStore ) );
     }
 
     return nextState;

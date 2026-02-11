@@ -14,6 +14,7 @@ export interface MapsState {
   vehicleTypesVisible: Record<VehicleType, boolean>;
   minimumCharge: number;
   zoomToPositionTime: number | undefined;
+  followGps: boolean;
 }
 
 export const initialState: MapsState = {
@@ -24,6 +25,7 @@ export const initialState: MapsState = {
   vehicleTypesVisible: {bicycle: true, scooter: true},
   minimumCharge: 10,
   zoomToPositionTime: undefined,
+  followGps: false,
 };
 
 export const mapsReducer = createReducer(
@@ -49,6 +51,14 @@ export const mapsReducer = createReducer(
   on( MapsActions.minimumCharge, ( state, {minimumCharge} ) => ({
     ...state,
     minimumCharge: minimumCharge,
+  }) ),
+  on( MapsActions.followGPS, ( state, {} ) => ({
+    ...state,
+    followGps: true,
+  }) ),
+  on( MapsActions.unfollowGPS, ( state, {} ) => ({
+    ...state,
+    followGps: false,
   }) )
 );
 

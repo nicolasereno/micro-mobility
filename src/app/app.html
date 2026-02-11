@@ -2,19 +2,16 @@
 
 <button class="zoomToPosition" matFab="filled" (click)="zoomToPosition()" aria-details="Center map"
         [disabled]="!positionAvailable()">
-  <mat-icon>center_focus_strong</mat-icon>
+  <mat-icon>gps_fixed</mat-icon>
 </button>
 
-<button class="reloadData" matFab="filled" (click)="reloadData()" aria-details="Reload Data">
-  <mat-icon>sync</mat-icon>
-</button>
+<!--<button class="reloadData" matFab="filled" (click)="reloadData()" aria-details="Reload Data">-->
+<!--  <mat-icon>sync</mat-icon>-->
+<!--</button>-->
 
-<div class="slider-wrapper">
-  <mat-slider min="0" max="100" step="1">
-    <input [value]="minimumCharge()" matSliderThumb (valueChange)="filterMinimumCharge($event)">
-  </mat-slider>
-</div>
-<h3>{{ minimumCharge() }} %</h3>
+<button class="settings" matFab="filled" (click)="openSettings()" aria-details="Open settings">
+  <mat-icon>settings</mat-icon>
+</button>
 
 <mat-button-toggle-group
   class="toggleVehicleTypes"
@@ -48,7 +45,7 @@
                        (keydown)="toggleOperator(operator)"
                        [checked]="operatorsVisible()[operator]">
       <mat-icon [svgIcon]="'operators:' + operator"></mat-icon>
-      @if (operatorsError() && operatorsError()[operator]) {
+      @if (operatorsError() && operatorsError()[ operator ]) {
         <span matBadge="!" matBadgeColor="warn"></span>
       }
     </mat-button-toggle>

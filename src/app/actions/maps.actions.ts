@@ -12,5 +12,7 @@ export const MapsActions = createActionGroup( {
     'Change Map Position': props<{ center: Coordinate, zoom: number }>(),
     'Toggle Vehicle Type': props<{ vehicleType: VehicleType }>(),
     'Minimum Charge': props<{ minimumCharge: number }>(),
+    'Follow GPS': emptyProps(),
+    'Unfollow GPS': emptyProps(),
   }
 } );

@@ -14,6 +14,7 @@ mat-card-header {
 .settings-content {
   margin-top: 1em;
 }
+
 .slider-container {
   display: flex;
   align-items: center;
@@ -25,4 +26,18 @@ mat-slider {
 
 mat-icon {
   color: var(--mat-tertiary);
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.settings-section {
+  margin-top: 1em;
+}
+
+.setting-row mat-slide-toggle {
+  margin-left: auto;
 }

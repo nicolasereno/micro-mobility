@@ -10,8 +10,9 @@
     <mat-card-subtitle>Modifica in base alle tue preferenze</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content class="settings-content">
-    <div>
-      <div>
+    <hr>
+    <div class="settings-section">
+      <div class="setting-row">
         <mat-icon>battery_charging_full</mat-icon>
         <label for="minimum-charge">
           Minimum battery charge ({{ minimumCharge() }}%)
@@ -24,26 +25,26 @@
       </div>
     </div>
 
-    <div>
-      <div>
+    <hr>
+
+    <div class="settings-section">
+      <div class="setting-row">
         <mat-icon>gps_fixed</mat-icon>
         <label for="gps-toggle">
           Follow GPS positions
         </label>
-      </div>
-      <div>
         <mat-slide-toggle id="gps-toggle" [checked]="followGps()" (change)="toggleFollowGps()"></mat-slide-toggle>
       </div>
     </div>
 
-    <div>
-      <div>
+    <hr>
+
+    <div class="settings-section">
+      <div class="setting-row">
         <mat-icon>light_dark</mat-icon>
         <label for="theme-toggle">
-          Light / Dark theme
+          Light theme
         </label>
-      </div>
-      <div>
         <mat-slide-toggle id="theme-toggle" [checked]="isLight()" (change)="toggleTheme()"></mat-slide-toggle>
       </div>
     </div>

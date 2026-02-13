@@ -34,6 +34,7 @@ import {BusesActions} from '../../actions/buses.actions';
 import {VehiclesActions} from '../../actions/vehicles.actions';
 import {MatIconRegistry} from '@angular/material/icon';
 import {take} from 'rxjs';
+import {Attribution} from 'ol/control';
 
 @Component( {
   selector: 'app-integrated-map',
@@ -48,7 +49,7 @@ export class IntegratedMap implements OnInit {
   private readonly positionVectorSource = new VectorSource();
   private readonly view: View;
   private readonly backgroundLight = new MapboxVectorLayer( {
-    styleUrl: 'https://tiles.openfreemap.org/styles/positron',
+    styleUrl: 'https://tiles.openfreemap.org/styles/positron'
   } );
   private readonly backgroundDark = new MapboxVectorLayer( {
     styleUrl: 'https://tiles.openfreemap.org/styles/dark',
@@ -185,7 +186,12 @@ export class IntegratedMap implements OnInit {
     const map = new Map( {
       target: 'map',
       view: this.view,
-      controls: [],
+      controls: [
+        new Attribution( {
+          collapsible: false,
+          target: 'attribution',
+        } )
+      ],
     } );
     this.vehiclesLayer = new VectorLayer( {
       source: this.vehiclesVectorSource,

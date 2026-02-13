@@ -82,3 +82,18 @@ body {
   height: 100%;
   overflow: hidden;
 }
+
+.ol-attribution ul {
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+}
+
+.ol-attribution > button {
+  display: none !important;
+}
+
+.ol-attribution {
+  padding: 0 !important;
+  margin: 0 !important;
+}

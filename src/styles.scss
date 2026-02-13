@@ -25,6 +25,18 @@ html {
   ));
 }
 
+// Define the dark theme override
+.dark-theme {
+  @include mat.theme((
+    color: (
+      primary: $primary-palette,
+      tertiary: $tertiary-palette,
+      color-variant: dark // This tells Material to use dark mode logic
+    ),
+  ));
+  color-scheme: dark;
+}
+
 body {
   // Default the application to a light color theme. This can be changed to
   // `dark` to enable the dark color theme, or to `light dark` to defer to the

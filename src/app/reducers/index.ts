@@ -2,14 +2,17 @@ import {ActionReducer, ActionReducerMap, INIT, MetaReducer, UPDATE} from '@ngrx/
 import {vehiclesFeatureKey, vehiclesReducer, VehiclesState} from './vehicles.reducer';
 import {mapsFeatureKey, mapsReducer, MapsState} from './maps.reducer';
 import {busesFeatureKey, busesReducer, BusesState} from './buses.reducer';
+import {settingsFeatureKey, settingsReducer, SettingsState} from './settings.reducer';
 
 export interface AppState {
+  [settingsFeatureKey]: SettingsState,
   [vehiclesFeatureKey]: VehiclesState;
   [mapsFeatureKey]: MapsState;
   [busesFeatureKey]: BusesState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
+  [settingsFeatureKey]: settingsReducer,
   [vehiclesFeatureKey]: vehiclesReducer,
   [mapsFeatureKey]: mapsReducer,
   [busesFeatureKey]: busesReducer,
@@ -19,7 +22,7 @@ export const position = ( state: AppState ) => state[mapsFeatureKey].position;
 export const positionAvailable = ( state: AppState ) => state[mapsFeatureKey].position !== undefined;
 export const accuracy = ( state: AppState ) => state[mapsFeatureKey].accuracy;
 export const zoomToPositionTime = ( state: AppState ) => state[mapsFeatureKey].zoomToPositionTime;
-export const minimumCharge = ( state: AppState ) => state[mapsFeatureKey].minimumCharge;
+export const minimumCharge = ( state: AppState ) => state[settingsFeatureKey].minimumCharge;
 export const allVehicles = ( state: AppState ) => state[vehiclesFeatureKey].vehicles;
 export const operatorsVisible = ( state: AppState ) => state[vehiclesFeatureKey].vehiclesVisible;
 export const operatorsError = ( state: AppState ) => state[vehiclesFeatureKey].vehiclesError;
@@ -32,7 +35,8 @@ export const vehicleTypesVisible = ( state: AppState ) => state[mapsFeatureKey].
 export const center = ( state: AppState ) => state[mapsFeatureKey].center;
 export const zoom = ( state: AppState ) => state[mapsFeatureKey].zoom;
 export const preferredStops = ( state: AppState ) => state[busesFeatureKey].preferredStops;
-export const followGps = ( state: AppState ) => state[mapsFeatureKey].followGps;
+export const followGps = ( state: AppState ) => state[settingsFeatureKey].followGps;
+export const theme = ( state: AppState ) => state[settingsFeatureKey].theme;
 
 export const metaReducers: MetaReducer<AppState>[] = [storageMetaReducer];
 
@@ -59,6 +63,11 @@ export function storageMetaReducer(
     // 💾 Persist only selected slices
     if ( nextState ) {
       const mapSliceToStore = {
+        [settingsFeatureKey]: {
+          minimumCharge: nextState[settingsFeatureKey].minimumCharge,
+          followGps: nextState[settingsFeatureKey].followGps,
+          theme: nextState[settingsFeatureKey].theme
+        },
         [vehiclesFeatureKey]: {
           vehiclesVisible: nextState[vehiclesFeatureKey].vehiclesVisible
         },
@@ -69,8 +78,6 @@ export function storageMetaReducer(
           center: nextState[mapsFeatureKey].center,
           zoom: nextState[mapsFeatureKey].zoom,
           vehicleTypesVisible: nextState[mapsFeatureKey].vehicleTypesVisible,
-          minimumCharge: nextState[mapsFeatureKey].minimumCharge,
-          followGps: nextState[mapsFeatureKey].followGps,
         },
       };
       localStorage.setItem( STORAGE_KEY, JSON.stringify( mapSliceToStore ) );

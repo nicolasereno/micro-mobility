@@ -2,7 +2,7 @@ import {Component, effect, inject, OnInit} from '@angular/core';
 import {IntegratedMap} from './components/map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
-import {busWaitTimes, operatorsError, operatorsVisible, positionAvailable, selectedVehicle, vehicleTypesVisible} from './reducers';
+import {busWaitTimes, operatorsError, operatorsVisible, positionAvailable, selectedVehicle, theme, vehicleTypesVisible} from './reducers';
 import {BusTimesInfo, SHARING_OPERATORS, SharingOperator, Vehicle, VEHICLE_TYPES, VehicleType} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
@@ -16,6 +16,7 @@ import {VehicleDetail} from './components/vehicle-detail/vehicle-detail';
 import {MatIcon} from '@angular/material/icon';
 import {MatBadge} from '@angular/material/badge';
 import {Settings} from './components/settings/settings';
+import {ThemeService} from './services/theme-service';
 
 @Component( {
   selector: 'app-root',
@@ -31,6 +32,7 @@ export class App implements OnInit {
 
   private readonly store = inject( Store );
   private readonly bottomSheetState = inject( BottomSheetState );
+  private readonly themeService = inject( ThemeService );
 
   protected readonly positionAvailable = this.store.selectSignal<boolean>( positionAvailable );
   protected readonly busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
@@ -38,6 +40,7 @@ export class App implements OnInit {
   protected readonly operatorsError = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsError );
   protected readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible );
   protected readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
+  private readonly theme = this.store.selectSignal<'light' | 'dark'>( theme );
 
   private readonly visibility = toSignal(
     fromEvent( document, 'visibilitychange' )
@@ -47,6 +50,9 @@ export class App implements OnInit {
   );
 
   constructor() {
+    effect( () => {
+      this.themeService.setTheme( this.theme() );
+    } );
     effect( () => {
       if ( !this.bottomSheetState.isOpen() ) {
         this.store.dispatch( BusesActions.clearBuses() );

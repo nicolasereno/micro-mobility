@@ -1,11 +1,12 @@
-import {Component, inject} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from '@angular/material/card';
 import {MatIcon} from '@angular/material/icon';
 import {MatSlider, MatSliderThumb} from '@angular/material/slider';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
-import {MapsActions} from '../../actions/maps.actions';
 import {Store} from '@ngrx/store';
-import {followGps, minimumCharge} from '../../reducers';
+import {followGps, minimumCharge, theme} from '../../reducers';
+import {SettingsActions} from '../../actions/settings.actions';
+import {ThemeService} from '../../services/theme-service';
 
 @Component( {
   selector: 'app-settings',
@@ -27,20 +28,30 @@ import {followGps, minimumCharge} from '../../reducers';
 export class Settings {
 
   private readonly store = inject( Store );
+  private readonly themeService = inject( ThemeService );
 
   protected readonly minimumCharge = this.store.selectSignal<number>( minimumCharge );
   protected readonly followGps = this.store.selectSignal<boolean>( followGps );
+  protected readonly theme = this.store.selectSignal<'light' | 'dark'>( theme );
+  protected readonly isLight = computed( () => this.theme() === 'light' );
 
   filterMinimumCharge( minimumCharge: number ) {
-    this.store.dispatch( MapsActions.minimumCharge( {minimumCharge} ) );
+    this.store.dispatch( SettingsActions.minimumCharge( {minimumCharge} ) );
   }
-
 
   protected toggleFollowGps() {
     if ( this.followGps() ) {
-      this.store.dispatch( MapsActions.unfollowGPS() );
+      this.store.dispatch( SettingsActions.unfollowGPS() );
     } else {
-      this.store.dispatch( MapsActions.followGPS() );
+      this.store.dispatch( SettingsActions.followGPS() );
+    }
+  }
+
+  protected toggleTheme() {
+    if ( this.isLight() ) {
+      this.store.dispatch( SettingsActions.changeTheme( {theme: 'dark'} ) );
+    } else {
+      this.store.dispatch( SettingsActions.changeTheme( {theme: 'light'} ) );
     }
   }
 }

@@ -36,5 +36,17 @@
       </div>
     </div>
 
+    <div>
+      <div>
+        <mat-icon>light_dark</mat-icon>
+        <label for="theme-toggle">
+          Light / Dark theme
+        </label>
+      </div>
+      <div>
+        <mat-slide-toggle id="theme-toggle" [checked]="isLight()" (change)="toggleTheme()"></mat-slide-toggle>
+      </div>
+    </div>
+
   </mat-card-content>
 </mat-card>

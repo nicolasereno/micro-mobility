@@ -14,6 +14,7 @@ import {
   preferredStops,
   selectedVehicleId,
   stopCode,
+  theme,
   vehicleTypesVisible,
   zoom,
   zoomToPositionTime
@@ -46,7 +47,12 @@ export class IntegratedMap implements OnInit {
   private readonly vehiclesVectorSource = new VectorSource();
   private readonly positionVectorSource = new VectorSource();
   private readonly view: View;
-
+  private readonly backgroundLight = new MapboxVectorLayer( {
+    styleUrl: 'https://tiles.openfreemap.org/styles/positron',
+  } );
+  private readonly backgroundDark = new MapboxVectorLayer( {
+    styleUrl: 'https://tiles.openfreemap.org/styles/dark',
+  } );
   private stopsLayer: VectorLayer | null = null;
   private vehiclesLayer: VectorLayer | null = null;
 
@@ -68,11 +74,16 @@ export class IntegratedMap implements OnInit {
   private readonly selectedVehicleId = this.store.selectSignal<string | undefined>( selectedVehicleId );
   private readonly preferredStops = this.store.selectSignal<string[]>( preferredStops );
   private readonly followGps = this.store.selectSignal<boolean>( followGps );
+  private readonly theme = this.store.selectSignal<'dark' | 'light'>( theme );
 
   constructor() {
     this.view = new View( {
       zoom: this.zoom(),
       center: this.center()
+    } );
+    effect( () => {
+      this.backgroundDark.setVisible( this.theme() === 'dark' );
+      this.backgroundLight.setVisible( this.theme() === 'light' );
     } );
     effect( () => {
       if ( this.followGps() && this.position() ) {
@@ -176,9 +187,6 @@ export class IntegratedMap implements OnInit {
       view: this.view,
       controls: [],
     } );
-    const openstreetmap = new MapboxVectorLayer( {
-      styleUrl: 'openstreetmap.json',
-    } );
     this.vehiclesLayer = new VectorLayer( {
       source: this.vehiclesVectorSource,
       minZoom: 14,
@@ -221,7 +229,8 @@ export class IntegratedMap implements OnInit {
         this.store.dispatch( VehiclesActions.selectVehicle( {operator, id} ) );
       }
     } );
-    map.addLayer( openstreetmap );
+    map.addLayer( this.backgroundLight );
+    map.addLayer( this.backgroundDark );
     map.addLayer( this.stopsLayer );
     map.addLayer( this.vehiclesLayer );
     map.addLayer( new VectorLayer( {

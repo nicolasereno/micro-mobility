@@ -39,15 +39,15 @@ export function provideMatIconRegistry() {
 
       iconRegistry.addSvgIconSetInNamespace(
         'operators',
-        sanitizer.bypassSecurityTrustResourceUrl( '/icons/operators.svg' )
+        sanitizer.bypassSecurityTrustResourceUrl( 'icons/operators.svg' )
       );
       iconRegistry.addSvgIconSetInNamespace(
         'vehicle-types',
-        sanitizer.bypassSecurityTrustResourceUrl( '/icons/vehicle-types.svg' )
+        sanitizer.bypassSecurityTrustResourceUrl( 'icons/vehicle-types.svg' )
       );
       iconRegistry.addSvgIconSetInNamespace(
         'symbols',
-        sanitizer.bypassSecurityTrustResourceUrl( '/icons/symbols.svg' )
+        sanitizer.bypassSecurityTrustResourceUrl( 'icons/symbols.svg' )
       );
 
       return iconRegistry;

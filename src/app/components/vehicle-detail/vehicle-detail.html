@@ -3,17 +3,23 @@
   <mat-card>
     <mat-card-header>
       <div mat-card-avatar>
-        <mat-icon class="card-header-icon" [svgIcon]="'vehicle-types:' + vehicle.vehicleType" alt="Vehicle type"></mat-icon>
+        <mat-icon
+          class="card-header-icon"
+          [svgIcon]="'vehicle-types:' + vehicle.vehicleType"
+          i18n-aria-label
+          aria-label="Vehicle type"></mat-icon>
       </div>
-      <mat-card-title>OPERATORE: {{ vehicle.operator }}</mat-card-title>
-      <mat-card-subtitle>TIPO: <strong>{{ vehicle.vehicleType }}</strong></mat-card-subtitle>
+      <mat-card-title i18n>OPERATOR: {{ vehicle.operator }}</mat-card-title>
+      <mat-card-subtitle i18n>VEHICLE TYPE: <strong>{{ vehicle.vehicleType }}</strong></mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <h4>CARICA: {{ vehicle.percentageCharge }}%</h4>
-      <h4>AUTONOMIA: {{ vehicle.estimatedDistance }}km</h4>
+      <h4 i18n>CHARGE: {{ vehicle.percentageCharge }}%</h4>
+      <h4 i18n>AUTONOMY: {{ vehicle.estimatedDistance }}km</h4>
     </mat-card-content>
     <mat-card-actions align="end">
-      <a matButton="outlined" (click)="openApp(vehicle)">SBLOCCA</a>
+      <a matButton="outlined" (click)="openApp(vehicle)" i18n>
+        <mat-icon [svgIcon]="'operators:' + vehicle.operator"></mat-icon>
+        UNLOCK</a>
     </mat-card-actions>
   </mat-card>
 }

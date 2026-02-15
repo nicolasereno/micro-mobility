@@ -39,12 +39,36 @@
         }
       },
       "root": "",
+      "i18n": {
+        "sourceLocale": "en",
+        "locales": {
+          "it": {
+            "translation": "src/locale/messages.it.json"
+          },
+          "fr": {
+            "translation": "src/locale/messages.fr.json"
+          },
+          "de": {
+            "translation": "src/locale/messages.de.json"
+          },
+          "es": {
+            "translation": "src/locale/messages.es.json"
+          },
+          "ja": {
+            "translation": "src/locale/messages.ja.json"
+          },
+          "zh": {
+            "translation": "src/locale/messages.zh.json"
+          }
+        }
+      },
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "localize": true,
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -56,6 +80,9 @@
             ],
             "styles": [
               "src/styles.scss"
+            ],
+            "polyfills": [
+              "@angular/localize/init"
             ]
           },
           "configurations": {
@@ -64,7 +91,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",

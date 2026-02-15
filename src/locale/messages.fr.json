@@ -1,0 +1,32 @@
+{
+  "locale": "fr",
+  "translations": {
+    "6580899228561008337": "Centrer la carte",
+    "4769510541470259841": "Ouvrir les paramètres",
+    "2710743603209389993": "Types de véhicules",
+    "1694903865877227758": "Opérateurs",
+    "8877285996907813354": "Arrêt de bus",
+    "213902587949742884": " CODE D’ARRÊT : {$START_TAG_STRONG}{$INTERPOLATION}{$CLOSE_TAG_STRONG}",
+    "1070090181748466490": "Basculer en favori",
+    "7733534048924171342": "{$INTERPOLATION} arrêts plus loin",
+    "8235805970201248247": "Maintenant",
+    "771135449401995553": "{$INTERPOLATION} min",
+    "4893616715766810081": "Aucune donnée disponible",
+    "4251961071062245194": "Mentions légales",
+    "8012836828351098527": "paramètres",
+    "4930506384627295710": "Paramètres",
+    "1418729003845570342": "Modifier les paramètres selon vos préférences",
+    "5610936288942316692": "Charge minimale de la batterie",
+    "6115100923284821172": " Charge minimale de la batterie ({$INTERPOLATION} %) ",
+    "5581190335063034086": "Suivre la position GPS",
+    "750777673408112131": " Suivre les positions GPS ",
+    "4214149938299612355": "Choisir le thème clair",
+    "6214631800626214182": " Thème clair ",
+    "7856974223389485354": "Type de véhicule",
+    "7334894897594816458": "OPÉRATEUR : {$INTERPOLATION}",
+    "2047403983572120412": "TYPE DE VÉHICULE : {$START_TAG_STRONG}{$INTERPOLATION}{$CLOSE_TAG_STRONG}",
+    "2297682587396228801": "CHARGE : {$INTERPOLATION}%",
+    "8976643784932920441": "AUTONOMIE : {$INTERPOLATION} km",
+    "1746230021859904624": "{$START_TAG_MAT_ICON}{$CLOSE_TAG_MAT_ICON} DÉVERROUILLER"
+  }
+}

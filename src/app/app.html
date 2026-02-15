@@ -1,21 +1,18 @@
 <app-integrated-map/>
 
-<button class="zoomToPosition" matFab="filled" (click)="zoomToPosition()" aria-details="Center map"
+<button class="zoomToPosition" matFab="filled" (click)="zoomToPosition()" i18n-aria-label aria-label="Center map"
         [disabled]="!positionAvailable()">
   <mat-icon>gps_fixed</mat-icon>
 </button>
 
-<!--<button class="reloadData" matFab="filled" (click)="reloadData()" aria-details="Reload Data">-->
-<!--  <mat-icon>sync</mat-icon>-->
-<!--</button>-->
-
-<button class="settings" matFab="filled" (click)="openSettings()" aria-details="Open settings">
+<button class="settings" matFab="filled" (click)="openSettings()" i18n-aria-label aria-label="Open settings">
   <mat-icon>settings</mat-icon>
 </button>
 
 <mat-button-toggle-group
   class="toggleVehicleTypes"
   name="vehicleTypes"
+  i18n-aria-label
   aria-label="Vehicle Types"
   hideMultipleSelectionIndicator="true"
   multiple
@@ -35,6 +32,7 @@
 <mat-button-toggle-group
   class="toggleOperator"
   name="operators"
+  i18n-aria-label
   aria-label="Operators"
   hideMultipleSelectionIndicator="true"
   multiple

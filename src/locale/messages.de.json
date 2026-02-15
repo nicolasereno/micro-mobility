@@ -1,0 +1,32 @@
+{
+  "locale": "de",
+  "translations": {
+    "6580899228561008337": "Karte zentrieren",
+    "4769510541470259841": "Einstellungen öffnen",
+    "2710743603209389993": "Fahrzeugtypen",
+    "1694903865877227758": "Betreiber",
+    "8877285996907813354": "Bushaltestelle",
+    "213902587949742884": " HALTESTELLENCODE: {$START_TAG_STRONG}{$INTERPOLATION}{$CLOSE_TAG_STRONG}",
+    "1070090181748466490": "Als Favorit markieren",
+    "7733534048924171342": "{$INTERPOLATION} Haltestellen entfernt",
+    "8235805970201248247": "Jetzt",
+    "771135449401995553": "{$INTERPOLATION} Min",
+    "4893616715766810081": "Keine Daten verfügbar",
+    "4251961071062245194": "Quellenangaben",
+    "8012836828351098527": "einstellungen",
+    "4930506384627295710": "Einstellungen",
+    "1418729003845570342": "Einstellungen nach Ihren Präferenzen ändern",
+    "5610936288942316692": "Mindestladezustand der Batterie",
+    "6115100923284821172": " Mindestladezustand der Batterie ({$INTERPOLATION} %) ",
+    "5581190335063034086": "GPS-Position folgen",
+    "750777673408112131": " GPS-Positionen folgen ",
+    "4214149938299612355": "Helles Design wählen",
+    "6214631800626214182": " Helles Design ",
+    "7856974223389485354": "Fahrzeugtyp",
+    "7334894897594816458": "BETREIBER: {$INTERPOLATION}",
+    "2047403983572120412": "FAHRZEUGTYP: {$START_TAG_STRONG}{$INTERPOLATION}{$CLOSE_TAG_STRONG}",
+    "2297682587396228801": "LADEZUSTAND: {$INTERPOLATION}%",
+    "8976643784932920441": "REICHWEITE: {$INTERPOLATION} km",
+    "1746230021859904624": "{$START_TAG_MAT_ICON}{$CLOSE_TAG_MAT_ICON} ENTRIEGELN"
+  }
+}

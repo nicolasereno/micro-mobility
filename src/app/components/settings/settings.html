@@ -2,25 +2,35 @@
   <mat-card-header>
     <div mat-card-avatar>
       <mat-icon
+        i18n-aria-label
+        aria-label="settings"
         class="card-header-icon"
         fontIcon="settings">
       </mat-icon>
     </div>
-    <mat-card-title>Impostazioni</mat-card-title>
-    <mat-card-subtitle>Modifica in base alle tue preferenze</mat-card-subtitle>
+    <mat-card-title i18n>Settings</mat-card-title>
+    <mat-card-subtitle i18n>Modify settings based on your preferences</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content class="settings-content">
     <hr>
     <div class="settings-section">
       <div class="setting-row">
-        <mat-icon>battery_charging_full</mat-icon>
-        <label for="minimum-charge">
+        <mat-icon
+          i18n-aria-label
+          aria-label="Minimum battery charge"
+          fontIcon="battery_charging_full">
+        </mat-icon>
+        <label for="minimum-charge" i18n>
           Minimum battery charge ({{ minimumCharge() }}%)
         </label>
       </div>
       <div class="slider-container">
         <mat-slider min="0" max="100" step="1">
-          <input id="minimum-charge" [value]="minimumCharge()" matSliderThumb (valueChange)="filterMinimumCharge($event)">
+          <input
+            id="minimum-charge"
+            [value]="minimumCharge()"
+            matSliderThumb
+            (valueChange)="filterMinimumCharge($event)">
         </mat-slider>
       </div>
     </div>
@@ -29,8 +39,12 @@
 
     <div class="settings-section">
       <div class="setting-row">
-        <mat-icon>gps_fixed</mat-icon>
-        <label for="gps-toggle">
+        <mat-icon
+          i18n-aria-label
+          aria-label="Follow GPS position"
+          fontIcon="gps_fixed">
+        </mat-icon>
+        <label for="gps-toggle" i18n>
           Follow GPS positions
         </label>
         <mat-slide-toggle id="gps-toggle" [checked]="followGps()" (change)="toggleFollowGps()"></mat-slide-toggle>
@@ -41,8 +55,11 @@
 
     <div class="settings-section">
       <div class="setting-row">
-        <mat-icon>light_dark</mat-icon>
-        <label for="theme-toggle">
+        <mat-icon
+          i18n-aria-label
+          aria-label="Choose light theme"
+          fontIcon="light_dark"></mat-icon>
+        <label for="theme-toggle" i18n>
           Light theme
         </label>
         <mat-slide-toggle id="theme-toggle" [checked]="isLight()" (change)="toggleTheme()"></mat-slide-toggle>

@@ -1,0 +1,32 @@
+{
+  "locale": "es",
+  "translations": {
+    "6580899228561008337": "Centrar mapa",
+    "4769510541470259841": "Abrir configuración",
+    "2710743603209389993": "Tipos de vehículos",
+    "1694903865877227758": "Operadores",
+    "8877285996907813354": "Parada de autobús",
+    "213902587949742884": " CÓDIGO DE PARADA: {$START_TAG_STRONG}{$INTERPOLATION}{$CLOSE_TAG_STRONG}",
+    "1070090181748466490": "Alternar como favorito",
+    "7733534048924171342": "{$INTERPOLATION} paradas más lejos",
+    "8235805970201248247": "Ahora",
+    "771135449401995553": "{$INTERPOLATION} min",
+    "4893616715766810081": "No hay datos disponibles",
+    "4251961071062245194": "Atribuciones",
+    "8012836828351098527": "configuración",
+    "4930506384627295710": "Configuración",
+    "1418729003845570342": "Modificar la configuración según tus preferencias",
+    "5610936288942316692": "Carga mínima de la batería",
+    "6115100923284821172": " Carga mínima de la batería ({$INTERPOLATION} %) ",
+    "5581190335063034086": "Seguir posición GPS",
+    "750777673408112131": " Seguir posiciones GPS ",
+    "4214149938299612355": "Elegir tema claro",
+    "6214631800626214182": " Tema claro ",
+    "7856974223389485354": "Tipo de vehículo",
+    "7334894897594816458": "OPERADOR: {$INTERPOLATION}",
+    "2047403983572120412": "TIPO DE VEHÍCULO: {$START_TAG_STRONG}{$INTERPOLATION}{$CLOSE_TAG_STRONG}",
+    "2297682587396228801": "CARGA: {$INTERPOLATION}%",
+    "8976643784932920441": "AUTONOMÍA: {$INTERPOLATION} km",
+    "1746230021859904624": "{$START_TAG_MAT_ICON}{$CLOSE_TAG_MAT_ICON} DESBLOQUEAR"
+  }
+}

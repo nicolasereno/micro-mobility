@@ -5,3 +5,11 @@
   padding: 1em;
   margin-right: 1em;
 }
+
+mat-card-content h4 {
+  display: flex;
+}
+
+mat-card-content h4 span {
+  margin-left: auto;
+}

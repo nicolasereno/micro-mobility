@@ -13,8 +13,11 @@
       <mat-card-subtitle i18n>VEHICLE TYPE: <strong>{{ vehicle.vehicleType }}</strong></mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <h4 i18n>CHARGE: {{ vehicle.percentageCharge }}%</h4>
-      <h4 i18n>AUTONOMY: {{ vehicle.estimatedDistance }}km</h4>
+      <hr>
+      <h4 i18n>CHARGE: <span>{{ vehicle.percentageCharge }}%</span></h4>
+      <hr>
+      <h4 i18n>AUTONOMY: <span>{{ vehicle.estimatedDistance }}km</span></h4>
+      <hr>
     </mat-card-content>
     <mat-card-actions align="end">
       <a matButton="outlined" (click)="openApp(vehicle)" i18n>

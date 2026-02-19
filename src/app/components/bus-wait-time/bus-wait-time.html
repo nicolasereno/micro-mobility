@@ -28,6 +28,7 @@
     @if (busWaitTimes() && busWaitTimes()!.length > 0) {
       <mat-list>
         @for (time of busWaitTimes(); track time) {
+          <hr>
           <mat-list-item>
             <h3 class="line-code" matListItemIcon>{{ time.lineCode }}</h3>
             <div matListItemTitle>{{ time.direction }}</div>

@@ -18,6 +18,8 @@
     "1418729003845570342": "Modify settings based on your preferences",
     "5610936288942316692": "Minimum battery charge",
     "6115100923284821172": " Minimum battery charge ({$INTERPOLATION}%) ",
+    "7621045286176289604": "Minimum riding distance",
+    "1537839910035971115": " Minimum riding distance ({$INTERPOLATION}km) ",
     "5581190335063034086": "Follow GPS position",
     "750777673408112131": " Follow GPS positions ",
     "4214149938299612355": "Choose light theme",

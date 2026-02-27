@@ -9,6 +9,7 @@ import {
   center,
   followGps,
   minimumCharge,
+  minimumDistance,
   operatorsVisible,
   position,
   preferredStops,
@@ -71,6 +72,7 @@ export class IntegratedMap implements OnInit {
   private readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible );
   private readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
   private readonly minimumCharge = this.store.selectSignal<number>( minimumCharge );
+  private readonly minimumDistance = this.store.selectSignal<number>( minimumDistance );
   private readonly selectedStopCode = this.store.selectSignal<string | undefined>( stopCode );
   private readonly selectedVehicleId = this.store.selectSignal<string | undefined>( selectedVehicleId );
   private readonly preferredStops = this.store.selectSignal<string[]>( preferredStops );
@@ -102,6 +104,7 @@ export class IntegratedMap implements OnInit {
           this.vehiclesVectorSource
             .addFeatures( this.toFeatures( this.vehicles()[operator]
               .filter( v => this.minimumCharge() <= v.percentageCharge )
+              .filter( v => this.minimumDistance() <= v.estimatedDistance )
               .filter( v => this.operatorsVisible()[operator] && (this.vehicleTypesVisible()[v.vehicleType]) ) ) );
         }
       }
@@ -267,7 +270,7 @@ export class IntegratedMap implements OnInit {
       new Style( {
         image: new Icon( {
           src: url,
-          scale: 1,
+          scale: isSelected ? 1.3 : 1,
           anchor: [0.5, 1],
         } ),
       } ),
@@ -297,7 +300,7 @@ export class IntegratedMap implements OnInit {
     return new Style( {
       image: new Icon( {
         src: url,
-        scale: 1.5,
+        scale: isSelected ? 2 : 1.5,
         anchor: [0.5, 0.5],
       } ),
     } );

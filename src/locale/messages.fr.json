@@ -18,6 +18,8 @@
     "1418729003845570342": "Modifier les paramètres selon vos préférences",
     "5610936288942316692": "Charge minimale de la batterie",
     "6115100923284821172": " Charge minimale de la batterie ({$INTERPOLATION} %) ",
+    "7621045286176289604": "Distance minimale de trajet",
+    "1537839910035971115": " Distance minimale de trajet ({$INTERPOLATION}km) ",
     "5581190335063034086": "Suivre la position GPS",
     "750777673408112131": " Suivre les positions GPS ",
     "4214149938299612355": "Choisir le thème clair",

@@ -18,6 +18,8 @@
     "1418729003845570342": "Modificar la configuración según tus preferencias",
     "5610936288942316692": "Carga mínima de la batería",
     "6115100923284821172": " Carga mínima de la batería ({$INTERPOLATION} %) ",
+    "7621045286176289604": "Distancia mínima de recorrido",
+    "1537839910035971115": " Distancia mínima de recorrido ({$INTERPOLATION}km) ",
     "5581190335063034086": "Seguir posición GPS",
     "750777673408112131": " Seguir posiciones GPS ",
     "4214149938299612355": "Elegir tema claro",

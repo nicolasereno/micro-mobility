@@ -23,6 +23,7 @@ export const positionAvailable = ( state: AppState ) => state[mapsFeatureKey].po
 export const accuracy = ( state: AppState ) => state[mapsFeatureKey].accuracy;
 export const zoomToPositionTime = ( state: AppState ) => state[mapsFeatureKey].zoomToPositionTime;
 export const minimumCharge = ( state: AppState ) => state[settingsFeatureKey].minimumCharge;
+export const minimumDistance = ( state: AppState ) => state[settingsFeatureKey].minimumDistance;
 export const allVehicles = ( state: AppState ) => state[vehiclesFeatureKey].vehicles;
 export const operatorsVisible = ( state: AppState ) => state[vehiclesFeatureKey].vehiclesVisible;
 export const operatorsError = ( state: AppState ) => state[vehiclesFeatureKey].vehiclesError;
@@ -65,6 +66,7 @@ export function storageMetaReducer(
       const mapSliceToStore = {
         [settingsFeatureKey]: {
           minimumCharge: nextState[settingsFeatureKey].minimumCharge,
+          minimumDistance: nextState[settingsFeatureKey].minimumDistance,
           followGps: nextState[settingsFeatureKey].followGps,
           theme: nextState[settingsFeatureKey].theme
         },

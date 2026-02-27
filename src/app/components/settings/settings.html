@@ -38,6 +38,30 @@
     <hr>
 
     <div class="settings-section">
+    <div class="setting-row">
+      <mat-icon
+        i18n-aria-label
+        aria-label="Minimum riding distance"
+        fontIcon="turn_sharp_right">
+      </mat-icon>
+      <label for="minimum-distance" i18n>
+        Minimum riding distance ({{ minimumDistance() }}km)
+      </label>
+    </div>
+    <div class="slider-container">
+      <mat-slider min="0" max="30" step="0.5">
+        <input
+          id="minimum-distance"
+          [value]="minimumDistance()"
+          matSliderThumb
+          (valueChange)="filterMinimumDistance($event)">
+      </mat-slider>
+    </div>
+  </div>
+
+    <hr>
+
+    <div class="settings-section">
       <div class="setting-row">
         <mat-icon
           i18n-aria-label

@@ -5,12 +5,14 @@ export const settingsFeatureKey = 'settings';
 
 export interface SettingsState {
   minimumCharge: number;
+  minimumDistance: number;
   followGps: boolean;
   theme: 'light' | 'dark';
 }
 
 export const initialState: SettingsState = {
   minimumCharge: 10,
+  minimumDistance: 3,
   followGps: false,
   theme: 'light',
 };
@@ -21,6 +23,10 @@ export const settingsReducer = createReducer(
   on( SettingsActions.minimumCharge, ( state, {minimumCharge} ) => ({
     ...state,
     minimumCharge: minimumCharge,
+  }) ),
+  on( SettingsActions.minimumDistance, ( state, {minimumDistance} ) => ({
+    ...state,
+    minimumDistance: minimumDistance,
   }) ),
   on( SettingsActions.followGPS, ( state, {} ) => ({
     ...state,

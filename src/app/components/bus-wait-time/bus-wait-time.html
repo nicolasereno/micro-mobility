@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-card-header>
+  <mat-card-header class="stop-card-header">
     <div mat-card-avatar>
       <mat-icon
         i18n-aria-label
@@ -10,45 +10,38 @@
         (keydown)="reloadData()">
       </mat-icon>
     </div>
-    <mat-card-title>{{ stopName() }}</mat-card-title>
-    <mat-card-subtitle i18n>
-      STOP CODE: <strong>{{ stopCode() }}</strong>
-    </mat-card-subtitle>
-    <span class="spacer"></span>
-    <button mat-icon-button
-            i18n-aria-label
-            aria-label="Toggle preferred"
-            [class]="(isPreferred() ? ' preferred-stop' : '')"
-            (click)="togglePreferred(stopCode())"
-            (keydown)="togglePreferred(stopCode())">
+    <div class="header-text">
+      <mat-card-title>{{ stopName() }}</mat-card-title>
+      <mat-card-subtitle i18n>
+        STOP CODE: <strong>{{ stopCode() }}</strong>
+      </mat-card-subtitle>
+    </div>
+    <button
+      class="preferred-btn"
+      mat-icon-button
+      i18n-aria-label
+      aria-label="Toggle preferred"
+      [class]="(isPreferred() ? ' preferred-stop' : '')"
+      (click)="togglePreferred(stopCode())"
+      (keydown)="togglePreferred(stopCode())">
       <mat-icon>star</mat-icon>
     </button>
   </mat-card-header>
   <mat-card-content>
     @if (busWaitTimes() && busWaitTimes()!.length > 0) {
-      <mat-list>
-        @for (time of busWaitTimes(); track time) {
-          <hr>
-          <mat-list-item>
-            <h3 class="line-code" matListItemIcon>{{ time.lineCode }}</h3>
-            <div matListItemTitle>{{ time.direction }}</div>
-            @if (time.distance) {
-              <div matListItemLine i18n>{{ time.distance }} stops far</div>
+      @for (time of busWaitTimes(); track time) {
+        <hr>
+        <h4>
+          {{ time.lineCode }} -> {{ time.direction }}
+          @if (time.arriving || time.time) {
+            @if (time.arriving) {
+              <span i18n>Now</span>
             } @else {
-              <div matListItemLine>Terminus</div>
+              <span i18n>{{ time.time }} min</span>
             }
-            @if (time.arriving || time.time) {
-              <div matListItemMeta>
-                @if (time.arriving) {
-                  <h3 i18n>Now</h3>
-                } @else {
-                  <h3 i18n>{{ time.time }} min</h3>
-                }
-              </div>
-            }
-          </mat-list-item>
-        }
-      </mat-list>
+          }
+        </h4>
+      }
     } @else {
       <p i18n>No data available</p>
     }

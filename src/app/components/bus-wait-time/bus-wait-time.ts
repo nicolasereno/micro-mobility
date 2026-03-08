@@ -2,7 +2,6 @@ import {Component, computed, inject} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {BusTimesInfo} from '../../model/model';
 import {busWaitTimes, preferredStops, stopCode, stopName} from '../../reducers';
-import {MatList, MatListItem} from '@angular/material/list';
 import {BusesActions} from '../../actions/buses.actions';
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from '@angular/material/card';
 import {MatIcon} from '@angular/material/icon';
@@ -10,7 +9,7 @@ import {MatIconButton} from '@angular/material/button';
 
 @Component({
   selector: 'app-bus-wait-time',
-  imports: [MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatList, MatListItem, MatIcon, MatIconButton],
+  imports: [MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle, MatCardContent, MatIcon, MatIconButton],
   templateUrl: './bus-wait-time.html',
   styleUrl: './bus-wait-time.scss',
   standalone: true

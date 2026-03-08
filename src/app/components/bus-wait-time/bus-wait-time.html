@@ -32,7 +32,7 @@
       @for (time of busWaitTimes(); track time) {
         <hr>
         <h4>
-          {{ time.lineCode }} -> {{ time.direction }}
+          {{ time.lineCode }} > {{ time.direction }}
           @if (time.arriving || time.time) {
             @if (time.arriving) {
               <span i18n>Now</span>

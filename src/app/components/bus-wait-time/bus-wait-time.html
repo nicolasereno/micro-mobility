@@ -32,13 +32,16 @@
       @for (time of busWaitTimes(); track time) {
         <hr>
         <h4>
-          {{ time.lineCode }} > {{ time.direction }}
-          @if (time.arriving || time.time) {
-            @if (time.arriving) {
-              <span i18n>Now</span>
-            } @else {
-              <span i18n>{{ time.time }} min</span>
-            }
+          {{ time.routeIdentifier }} > {{ time.directionDescription }}
+          @if (time.minutes == 0) {
+            <span i18n>Now</span>
+          } @else {
+            <span i18n>{{ time.minutes }} min</span>
+          }
+          @if (time.corrected) {
+            <mat-icon>sensors</mat-icon>
+          } @else {
+            <mat-icon>access_time</mat-icon>
           }
         </h4>
       }

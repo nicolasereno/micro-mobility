@@ -211,14 +211,14 @@ export class IntegratedMap implements OnInit {
     });
     this.stopsLayer = new VectorLayer({
       source: new VectorSource({
-        url: 'stops.json',
+        url: 'https://gtfs-rome.homelinuxserver.org/api/gis/stops',
         format: new GeoJSON(),
       }),
       minZoom: 16,
       maxZoom: 24,
     });
     this.stopsLayer.setStyle(
-      (feature: FeatureLike): Style[] => this.styleForBusStop(feature.get('c') ?? ''));
+      (feature: FeatureLike): Style[] => this.styleForBusStop(feature.get('stopId') ?? ''));
 
     map.on('singleclick', (event: MapBrowserEvent) => {
       const stopFeature = map.forEachFeatureAtPixel(
@@ -229,8 +229,9 @@ export class IntegratedMap implements OnInit {
         }
       );
       if (stopFeature) {
-        const code = stopFeature.get('c');
-        this.store.dispatch(BusesActions.loadBuses({stopCode: code}));
+        const code = stopFeature.get('stopId');
+        const description = stopFeature.get('name');
+        this.store.dispatch(BusesActions.loadBuses({stopCode: code, stopDescription: description}));
       }
 
       const vehicleFeature = map.forEachFeatureAtPixel(

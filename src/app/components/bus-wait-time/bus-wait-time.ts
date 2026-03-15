@@ -25,7 +25,7 @@ export class BusWaitTime {
   protected readonly isPreferred = computed(() => this.stopCode() !== undefined && this.preferredStops().includes(this.stopCode()!));
 
   protected reloadData() {
-    this.store.dispatch(BusesActions.refreshBuses({stopCode: this.stopCode()!}))
+    this.store.dispatch(BusesActions.refreshBuses({stopCode: this.stopCode()!, stopDescription: this.stopName()!}))
   }
 
   protected togglePreferred(stopCode: string | undefined) {

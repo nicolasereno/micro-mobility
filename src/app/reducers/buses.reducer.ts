@@ -20,34 +20,35 @@ export const initialState: BusesState = {
 
 export const busesReducer = createReducer(
   initialState,
-  on( BusesActions.loadBuses, ( state, action ) => ({
+  on(BusesActions.loadBuses, (state, action) => ({
     ...state,
     stopCode: action.stopCode,
-    stopName: undefined,
+    stopName: action.stopDescription,
     arrivals: undefined
-  }) ),
-  on( BusesActions.loadBusesSuccess, ( state, action ) => ({
+  })),
+  on(BusesActions.loadBusesSuccess, (state, action) => ({
     ...state,
     stopName: action.times.stopName,
     arrivals: action.times.arrivals
-  }) ),
-  on( BusesActions.loadBusesFailure, ( state, action ) => ({
+  })),
+  on(BusesActions.loadBusesFailure, (state, _) => ({
     ...state,
     stopCode: undefined,
-  }) ),
-  on( BusesActions.clearBuses, ( state, {} ) => ({
+    stopName: undefined,
+  })),
+  on(BusesActions.clearBuses, (state, {}) => ({
     ...state,
     stopCode: undefined,
     stopName: undefined,
     arrivals: undefined
-  }) ),
-  on( BusesActions.addPreferredStop, ( state, {stopCode} ) => ({
+  })),
+  on(BusesActions.addPreferredStop, (state, {stopCode}) => ({
     ...state,
-    preferredStops: [...state.preferredStops.filter( sc => sc !== stopCode ), stopCode]
-  }) ),
-  on( BusesActions.removePreferredStop, ( state, {stopCode} ) => ({
+    preferredStops: [...state.preferredStops.filter(sc => sc !== stopCode), stopCode]
+  })),
+  on(BusesActions.removePreferredStop, (state, {stopCode}) => ({
     ...state,
-    preferredStops: state.preferredStops.filter( sc => sc !== stopCode )
-  }) )
+    preferredStops: state.preferredStops.filter(sc => sc !== stopCode)
+  }))
 );
 

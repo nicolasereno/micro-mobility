@@ -1,15 +1,15 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
 import {BusStopTimesInfo} from '../model/model';
 
-export const BusesActions = createActionGroup( {
+export const BusesActions = createActionGroup({
   source: 'Buses',
   events: {
     'Clear Buses': emptyProps(),
-    'Load Buses': props<{ stopCode: string }>(),
+    'Load Buses': props<{ stopCode: string, stopDescription: string }>(),
     'Load Buses Success': props<{ times: BusStopTimesInfo }>(),
     'Load Buses Failure': props<{ error: string }>(),
-    'Refresh Buses': props<{ stopCode: string }>(),
+    'Refresh Buses': props<{ stopCode: string, stopDescription: string }>(),
     'Add Preferred Stop': props<{ stopCode: string }>(),
     'Remove Preferred Stop': props<{ stopCode: string }>(),
   }
-} );
+});

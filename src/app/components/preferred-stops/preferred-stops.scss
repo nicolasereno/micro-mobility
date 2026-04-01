@@ -9,4 +9,9 @@
 mat-card-content h4 {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+mat-card-content h4 p {
+  margin-block: 0;
 }

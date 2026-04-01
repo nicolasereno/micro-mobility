@@ -2,8 +2,17 @@ import {Component, effect, inject, OnInit} from '@angular/core';
 import {IntegratedMap} from './components/map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
-import {busWaitTimes, operatorsError, operatorsVisible, positionAvailable, selectedVehicle, theme, vehicleTypesVisible} from './reducers';
-import {BusTimesInfo, SHARING_OPERATORS, SharingOperator, Vehicle, VEHICLE_TYPES, VehicleType} from './model/model';
+import {
+  busWaitTimes,
+  operatorsError,
+  operatorsVisible,
+  positionAvailable,
+  preferredStops,
+  selectedVehicle,
+  theme,
+  vehicleTypesVisible
+} from './reducers';
+import {BusStop, BusTimesInfo, SHARING_OPERATORS, SharingOperator, Vehicle, VEHICLE_TYPES, VehicleType} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatMiniFabButton} from '@angular/material/button';
@@ -41,6 +50,7 @@ export class App implements OnInit {
   protected readonly operatorsError = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsError );
   protected readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible );
   protected readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
+  protected readonly preferredStops = this.store.selectSignal<BusStop[]>( preferredStops );
   private readonly theme = this.store.selectSignal<'light' | 'dark'>( theme );
 
   private readonly visibility = toSignal(
@@ -70,7 +80,7 @@ export class App implements OnInit {
         this.bottomSheetState.open( VehicleDetail );
       }
     } );
-    interval( 5000 )
+    interval( 2.5 * 1000 )
       .pipe(
         takeUntilDestroyed(),
         filter( () => this.visibility() ) )

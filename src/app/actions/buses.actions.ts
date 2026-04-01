@@ -6,7 +6,7 @@ export const BusesActions = createActionGroup( {
   events: {
     'Clear Buses': emptyProps(),
     'Load Buses': props<{ stop: BusStop }>(),
-    'Load Buses Success': props<{ times: BusStopTimesInfo }>(),
+    'Load Buses Success': props<{ stop: BusStop, times: BusStopTimesInfo }>(),
     'Load Buses Failure': props<{ error: string }>(),
     'Refresh Buses': props<{ stop: BusStop }>(),
     'Add Preferred Stop': props<{ stop: BusStop }>(),

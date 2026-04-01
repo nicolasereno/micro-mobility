@@ -17,6 +17,7 @@ export class BusesEffects {
       mergeMap( action =>
         this.busStopTimesService.loadBusStopTimes( action.stop.stopId, action.stop.description ).pipe(
           map( info => BusesActions.loadBusesSuccess( {
+            stop: action.stop,
             times: info
           } ) ),
           catchError( () => of( BusesActions.loadBusesFailure( {
@@ -33,6 +34,7 @@ export class BusesEffects {
       mergeMap( action =>
         this.busStopTimesService.loadBusStopTimes( action.stop.stopId, action.stop.description ).pipe(
           map( info => BusesActions.loadBusesSuccess( {
+            stop: action.stop,
             times: info
           } ) )
         )

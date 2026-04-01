@@ -25,6 +25,7 @@ export const busesReducer = createReducer(
   }) ),
   on( BusesActions.loadBusesSuccess, ( state, action ) => ({
     ...state,
+    stop: action.times.stop,
     arrivals: action.times.arrivals
   }) ),
   on( BusesActions.loadBusesFailure, ( state, _ ) => ({

@@ -17,4 +17,8 @@ export class BottomSheetState {
       this.isOpen.set( false );
     } );
   }
+
+  close() {
+    this.bottomSheet.dismiss();
+  }
 }

@@ -1,0 +1,30 @@
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar>
+      <mat-icon
+        i18n-aria-label
+        aria-label="Preferred stops"
+        class="card-header-icon"
+        fontIcon="star">
+      </mat-icon>
+    </div>
+    <mat-card-title i18n>Preferred stops</mat-card-title>
+    <mat-card-subtitle i18n>Go to preferred stop wait times</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="settings-content">
+    @if (preferredStops() && preferredStops()!.length > 0) {
+      @for (stop of preferredStops(); track stop.stopId) {
+        <hr>
+        <h4>
+          {{ stop.stopId }} - {{ stop.description }}
+          <button matIconButton i18n-aria-label aria-label="Go to bus stop wait times"
+                  (click)="openStop(stop)" (keydown)="openStop(stop)">
+            <mat-icon>access_time</mat-icon>
+          </button>
+        </h4>
+      }
+    } @else {
+      <p i18n>No data available</p>
+    }
+  </mat-card-content>
+</mat-card>

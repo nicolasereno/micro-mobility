@@ -1,6 +1,8 @@
 {
   "locale": "fr",
   "translations": {
+    "7969555620692675034": "Arrêts de bus favoris",
+    "7733534048924171342": "{$INTERPOLATION} arrêts",
     "6580899228561008337": "Centrer la carte",
     "4769510541470259841": "Ouvrir les paramètres",
     "2710743603209389993": "Types de véhicules",
@@ -12,6 +14,10 @@
     "771135449401995553": "{$INTERPOLATION} min",
     "4893616715766810081": "Aucune donnée disponible",
     "4251961071062245194": "Mentions légales",
+    "8124948824716090761": "Arrêts favoris",
+    "5291111169528866800": "Arrêts favoris",
+    "9076348823538368350": "Aller aux temps d'attente des arrêts favoris",
+    "1086257923358978661": "Aller aux temps d'attente de l'arrêt de bus",
     "8012836828351098527": "paramètres",
     "4930506384627295710": "Paramètres",
     "1418729003845570342": "Modifier les paramètres selon vos préférences",

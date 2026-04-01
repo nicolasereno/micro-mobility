@@ -16,8 +16,7 @@ export class BusStopTimes {
       .pipe(
         retry(3),
         map(result => ({
-          stopCode: stopId,
-          stopName: description,
+          stop: { stopId: stopId, description: description },
           arrivals: result,
         }))
       );

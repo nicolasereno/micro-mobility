@@ -27,8 +27,7 @@ export const minimumDistance = ( state: AppState ) => state[settingsFeatureKey].
 export const allVehicles = ( state: AppState ) => state[vehiclesFeatureKey].vehicles;
 export const operatorsVisible = ( state: AppState ) => state[vehiclesFeatureKey].vehiclesVisible;
 export const operatorsError = ( state: AppState ) => state[vehiclesFeatureKey].vehiclesError;
-export const stopCode = ( state: AppState ) => state[busesFeatureKey].stopCode;
-export const stopName = ( state: AppState ) => state[busesFeatureKey].stopName;
+export const stop = ( state: AppState ) => state[busesFeatureKey].stop;
 export const busWaitTimes = ( state: AppState ) => state[busesFeatureKey].arrivals;
 export const selectedVehicle = ( state: AppState ) => state[vehiclesFeatureKey].selectedVehicle;
 export const selectedVehicleId = ( state: AppState ) => state[vehiclesFeatureKey].selectedVehicle?.id;

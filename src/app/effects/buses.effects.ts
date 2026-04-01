@@ -8,36 +8,36 @@ import {BusesActions} from '../actions/buses.actions';
 @Injectable()
 export class BusesEffects {
 
-  private actions$ = inject(Actions);
-  private busStopTimesService = inject(BusStopTimes);
+  private actions$ = inject( Actions );
+  private busStopTimesService = inject( BusStopTimes );
 
-  loadStopTimes$ = createEffect(() => {
+  loadStopTimes$ = createEffect( () => {
     return this.actions$.pipe(
-      ofType(BusesActions.loadBuses),
-      mergeMap(action =>
-        this.busStopTimesService.loadBusStopTimes(action.stopCode, action.stopDescription).pipe(
-          map(info => BusesActions.loadBusesSuccess({
+      ofType( BusesActions.loadBuses ),
+      mergeMap( action =>
+        this.busStopTimesService.loadBusStopTimes( action.stop.stopId, action.stop.description ).pipe(
+          map( info => BusesActions.loadBusesSuccess( {
             times: info
-          })),
-          catchError(() => of(BusesActions.loadBusesFailure({
+          } ) ),
+          catchError( () => of( BusesActions.loadBusesFailure( {
             error: ''
-          })))
+          } ) ) )
         )
       )
     )
-  })
+  } )
 
-  refreshStopTimes$ = createEffect(() => {
+  refreshStopTimes$ = createEffect( () => {
     return this.actions$.pipe(
-      ofType(BusesActions.refreshBuses),
-      mergeMap(action =>
-        this.busStopTimesService.loadBusStopTimes(action.stopCode, action.stopDescription).pipe(
-          map(info => BusesActions.loadBusesSuccess({
+      ofType( BusesActions.refreshBuses ),
+      mergeMap( action =>
+        this.busStopTimesService.loadBusStopTimes( action.stop.stopId, action.stop.description ).pipe(
+          map( info => BusesActions.loadBusesSuccess( {
             times: info
-          }))
+          } ) )
         )
       )
     )
-  })
+  } )
 
 }

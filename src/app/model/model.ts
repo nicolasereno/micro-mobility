@@ -48,7 +48,11 @@ export type BusTimesInfo = {
 }
 
 export type BusStopTimesInfo = {
-  stopCode: string;
-  stopName: string;
+  stop: BusStop;
   arrivals: BusTimesInfo[];
+}
+
+export type BusStop = {
+  stopId: string;
+  description: string;
 }

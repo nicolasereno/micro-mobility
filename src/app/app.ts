@@ -6,7 +6,7 @@ import {busWaitTimes, operatorsError, operatorsVisible, positionAvailable, selec
 import {BusTimesInfo, SHARING_OPERATORS, SharingOperator, Vehicle, VEHICLE_TYPES, VehicleType} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
-import {MatFabButton} from '@angular/material/button';
+import {MatMiniFabButton} from '@angular/material/button';
 import {filter, fromEvent, interval, map} from 'rxjs';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {BusWaitTime} from './components/bus-wait-time/bus-wait-time';
@@ -17,10 +17,11 @@ import {MatIcon} from '@angular/material/icon';
 import {MatBadge} from '@angular/material/badge';
 import {Settings} from './components/settings/settings';
 import {ThemeService} from './services/theme-service';
+import {PreferredStops} from './components/preferred-stops/preferred-stops';
 
 @Component( {
   selector: 'app-root',
-  imports: [IntegratedMap, MatIcon, MatButtonToggleGroup, MatButtonToggle, MatFabButton, MatBadge],
+  imports: [IntegratedMap, MatIcon, MatButtonToggleGroup, MatButtonToggle, MatMiniFabButton, MatBadge],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.scss'
@@ -112,4 +113,7 @@ export class App implements OnInit {
     this.store.dispatch( VehiclesActions.toggleOperator( {operator} ) )
   }
 
+  protected openPreferredStops() {
+    this.bottomSheetState.open( PreferredStops );
+  }
 }

@@ -3,16 +3,16 @@ import {IntegratedMap} from './components/map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
 import {
-  busWaitTimes,
+  busWaitTimes, nearStops,
   operatorsError,
-  operatorsVisible,
+  operatorsVisible, position,
   positionAvailable,
   preferredStops,
   selectedVehicle,
   theme,
   vehicleTypesVisible
 } from './reducers';
-import {BusStop, BusTimesInfo, SHARING_OPERATORS, SharingOperator, Vehicle, VEHICLE_TYPES, VehicleType} from './model/model';
+import {BusStop, BusTimesInfo, NearBusStop, SHARING_OPERATORS, SharingOperator, Vehicle, VEHICLE_TYPES, VehicleType} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatMiniFabButton} from '@angular/material/button';
@@ -27,6 +27,9 @@ import {MatBadge} from '@angular/material/badge';
 import {Settings} from './components/settings/settings';
 import {ThemeService} from './services/theme-service';
 import {PreferredStops} from './components/preferred-stops/preferred-stops';
+import {Coordinate} from 'ol/coordinate';
+import {toLonLat} from 'ol/proj';
+import {NearStops} from './components/near-stops/near-stops';
 
 @Component( {
   selector: 'app-root',
@@ -45,12 +48,14 @@ export class App implements OnInit {
   private readonly themeService = inject( ThemeService );
 
   protected readonly positionAvailable = this.store.selectSignal<boolean>( positionAvailable );
+  protected readonly position = this.store.selectSignal<Coordinate | undefined>( position );
   protected readonly busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
   protected readonly selectedVehicle = this.store.selectSignal<Vehicle | undefined>( selectedVehicle )
   protected readonly operatorsError = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsError );
   protected readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible );
   protected readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
   protected readonly preferredStops = this.store.selectSignal<BusStop[]>( preferredStops );
+  protected readonly nearBusStops = this.store.selectSignal<NearBusStop[] | undefined>( nearStops );
   private readonly theme = this.store.selectSignal<'light' | 'dark'>( theme );
 
   private readonly visibility = toSignal(
@@ -78,6 +83,11 @@ export class App implements OnInit {
     effect( () => {
       if ( this.selectedVehicle() && !this.bottomSheetState.isOpen() ) {
         this.bottomSheetState.open( VehicleDetail );
+      }
+    } );
+    effect( () => {
+      if ( this.nearBusStops() !== undefined ) {
+        this.bottomSheetState.open( NearStops );
       }
     } );
     interval( 2.5 * 1000 )
@@ -125,5 +135,10 @@ export class App implements OnInit {
 
   protected openPreferredStops() {
     this.bottomSheetState.open( PreferredStops );
+  }
+
+  protected searchNearStops() {
+    const lonLat = toLonLat(this.position()!);
+    this.store.dispatch( BusesActions.loadNearBusStops({lon: lonLat[0], lat: lonLat[1]}) );
   }
 }

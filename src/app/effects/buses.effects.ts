@@ -42,4 +42,19 @@ export class BusesEffects {
     )
   } )
 
+  loadNearStops$ = createEffect( () => {
+    return this.actions$.pipe(
+      ofType( BusesActions.loadNearBusStops ),
+      mergeMap( action =>
+        this.busStopTimesService.searchNearestStops( action.lon, action.lat ).pipe(
+          map( nearStops => BusesActions.loadNearBusStopsSuccess( {
+            nearStops: nearStops
+          } ) ),
+          catchError( () => of( BusesActions.loadNearBusStopsFailure( {
+            error: ''
+          } ) ) )
+        )
+      )
+    )
+  } )
 }

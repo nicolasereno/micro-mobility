@@ -52,6 +52,11 @@ export type BusStopTimesInfo = {
   arrivals: BusTimesInfo[];
 }
 
+export type NearBusStop = {
+  stop: BusStop;
+  distance: number;
+}
+
 export type BusStop = {
   stopId: string;
   description: string;

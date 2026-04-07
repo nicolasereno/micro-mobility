@@ -1,0 +1,30 @@
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar>
+      <mat-icon
+        i18n-aria-label
+        aria-label="Preferred stops"
+        class="card-header-icon"
+        fontIcon="map_search">
+      </mat-icon>
+    </div>
+    <mat-card-title i18n>Near stops</mat-card-title>
+    <mat-card-subtitle i18n>Go to near stop wait times</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="settings-content">
+    @if (nearStops() && nearStops()!.length > 0) {
+      @for (nearStop of nearStops(); track nearStop.stop.stopId) {
+        <hr>
+        <h4>
+          <p>{{ nearStop.stop.stopId }} - {{ nearStop.stop.description }} ({{ nearStop.distance }}m)</p>
+          <button matIconButton i18n-aria-label aria-label="Go to bus stop wait times"
+                  (click)="openStop(nearStop.stop)" (keydown)="openStop(nearStop.stop)">
+            <mat-icon>access_time</mat-icon>
+          </button>
+        </h4>
+      }
+    } @else {
+      <p i18n>No data available</p>
+    }
+  </mat-card-content>
+</mat-card>

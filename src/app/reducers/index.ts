@@ -29,6 +29,7 @@ export const operatorsVisible = ( state: AppState ) => state[vehiclesFeatureKey]
 export const operatorsError = ( state: AppState ) => state[vehiclesFeatureKey].vehiclesError;
 export const stop = ( state: AppState ) => state[busesFeatureKey].stop;
 export const busWaitTimes = ( state: AppState ) => state[busesFeatureKey].arrivals;
+export const nearStops = ( state: AppState ) => state[busesFeatureKey].nearStops;
 export const selectedVehicle = ( state: AppState ) => state[vehiclesFeatureKey].selectedVehicle;
 export const selectedVehicleId = ( state: AppState ) => state[vehiclesFeatureKey].selectedVehicle?.id;
 export const vehicleTypesVisible = ( state: AppState ) => state[mapsFeatureKey].vehicleTypesVisible;

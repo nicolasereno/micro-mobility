@@ -1,5 +1,5 @@
 import {createActionGroup, emptyProps, props} from '@ngrx/store';
-import {BusStop, BusStopTimesInfo} from '../model/model';
+import {BusStop, BusStopTimesInfo, NearBusStop} from '../model/model';
 
 export const BusesActions = createActionGroup( {
   source: 'Buses',
@@ -11,5 +11,9 @@ export const BusesActions = createActionGroup( {
     'Refresh Buses': props<{ stop: BusStop }>(),
     'Add Preferred Stop': props<{ stop: BusStop }>(),
     'Remove Preferred Stop': props<{ stopId: string }>(),
+    'Load Near Bus Stops': props<{ lon: number, lat: number }>(),
+    'Load Near Bus Stops Success': props<{ nearStops: NearBusStop[] }>(),
+    'Load Near Bus Stops Failure': props<{ error: string }>(),
+    'Clear Near Bus Stops': emptyProps(),
   }
 } );

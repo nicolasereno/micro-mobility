@@ -4,6 +4,9 @@
   <button matMiniFab="filled" (click)="openPreferredStops()" i18n-aria-label aria-label="Preferred bus stops" [disabled]="preferredStops().length === 0">
     <mat-icon>star</mat-icon>
   </button>
+  <button matMiniFab="filled" (click)="searchNearStops()" i18n-aria-label aria-label="Near bus stops" [disabled]="!positionAvailable()">
+    <mat-icon>map_search</mat-icon>
+  </button>
   <button matMiniFab="filled" (click)="zoomToPosition()" i18n-aria-label aria-label="Center map"
           [disabled]="!positionAvailable()">
     <mat-icon>gps_fixed</mat-icon>

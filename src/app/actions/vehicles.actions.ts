@@ -8,7 +8,7 @@ export const VehiclesActions = createActionGroup( {
     'Load Vehicles Success': props<{ operator: SharingOperator, vehicles: Vehicle[] }>(),
     'Load Vehicles Failure': props<{ operator: SharingOperator, error: string }>(),
     'Toggle Operator': props<{ operator: SharingOperator }>(),
-    'Select Vehicle': props<{ id: String, operator: SharingOperator }>(),
+    'Select Vehicle': props<{ id: string, operator: SharingOperator }>(),
     'Unselect Vehicle': emptyProps(),
   }
 } );

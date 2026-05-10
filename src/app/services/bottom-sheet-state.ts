@@ -1,4 +1,4 @@
-import {inject, Injectable, signal} from '@angular/core';
+import {inject, Injectable, signal, Type} from '@angular/core';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 
 @Injectable( {providedIn: 'root'} )
@@ -7,7 +7,7 @@ export class BottomSheetState {
   readonly isOpen = signal( false );
   private readonly bottomSheet = inject( MatBottomSheet );
 
-  open( component: any ) {
+  open<T>( component: Type<T> ) {
     if ( this.isOpen() ) return;
 
     const ref = this.bottomSheet.open( component );

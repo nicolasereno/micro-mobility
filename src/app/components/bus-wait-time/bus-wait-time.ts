@@ -21,7 +21,7 @@ export class BusWaitTime {
   protected readonly busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
   protected readonly stop = this.store.selectSignal<BusStop | undefined>( stop )
   protected readonly preferredStops = this.store.selectSignal<BusStop[]>( preferredStops )
-  protected readonly isPreferred = computed( () => this.stop() !== undefined && this.preferredStops().find( stop => stop.stopId === this.stop()?.stopId! ) !== undefined );
+  protected readonly isPreferred = computed( () => this.stop() !== undefined && this.preferredStops().find( stop => stop.stopId === this.stop()?.stopId ) !== undefined );
 
   protected reloadData() {
     this.store.dispatch( BusesActions.refreshBuses( {stop: this.stop()!} ) )

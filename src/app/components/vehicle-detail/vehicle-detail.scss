@@ -13,3 +13,10 @@ mat-card-content h4 {
 mat-card-content h4 span {
   margin-left: auto;
 }
+
+mat-card-actions mat-icon {
+  font-size: 1.4em;
+  width: 1.4em;
+  height: 1.4em;
+  transform: translateY(2px);
+}

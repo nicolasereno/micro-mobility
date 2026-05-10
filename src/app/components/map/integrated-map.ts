@@ -98,10 +98,10 @@ export class IntegratedMap implements OnInit {
       this.backgroundLight.setVisible( this.theme() === 'light' );
     } );
     effect( () => {
-      if ( this.followGps() && this.position() ) {
-        console.debug( 'Following GPS position' );
+      const pos = this.position();
+      if ( this.followGps() && pos ) {
         this.view.animate( {
-          center: [this.position()![0], this.position()![1]],
+          center: pos,
           duration: 500
         } );
       }
@@ -120,13 +120,13 @@ export class IntegratedMap implements OnInit {
     } );
 
     effect( () => {
-      console.debug( this.selectedStop() );
-      this.stopsLayer!.changed();
+      this.selectedStop();
+      this.stopsLayer?.changed();
     } );
 
     effect( () => {
-      console.debug( this.selectedVehicleId() );
-      this.vehiclesLayer!.changed();
+      this.selectedVehicleId();
+      this.vehiclesLayer?.changed();
     } );
 
     effect( () => {
@@ -263,17 +263,16 @@ export class IntegratedMap implements OnInit {
 
   private styleForBusStop( code: string ) {
     const isSelected = this.selectedStop()?.stopId === code;
-    const isPreferred = this.preferredStops().find( stop => stop!.stopId == code ) !== undefined;
+    const isPreferred = this.preferredStops().find( stop => stop.stopId === code ) !== undefined;
     const primary = this.getThemeColor( '--mat-sys-inverse-primary', true );
     const secondary = this.getThemeColor( '--mat-sys-primary', true );
     const tertiary = this.getThemeColor( '--mat-sys-tertiary', true );
     const template = '<svg width="24px" height="24px" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">' + this.symbols['bus'] + '</svg>';
-    const vars = {
+    const vars: Record<string, string> = {
       primary: isPreferred ? tertiary : secondary,
       secondary: primary,
     };
-    // @ts-ignore
-    const svg = template.replace( /\$\{(\w+)}/g, ( _, key ) => vars[key] );
+    const svg = template.replace( /\$\{(\w+)}/g, ( _, key ) => vars[key] ?? '' );
     const url = `data:image/svg+xml;utf8,${encodeURIComponent( svg )}`
 
     return [
@@ -298,13 +297,12 @@ export class IntegratedMap implements OnInit {
   private styleForVehicle( operator: SharingOperator, vehicleType: VehicleType, chargePercentage: number, isSelected: boolean ) {
     const template = '<svg width="24px" height="24px" viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">' + this.symbols[vehicleType] + '</svg>';
     const percentage = chargePercentage * 135 / 100;
-    const vars = {
+    const vars: Record<string, string | number> = {
       arc: percentage,
       secondary: SECONDARY_COLORS[operator],
       primary: PRIMARY_COLORS[operator]
-    }
-    // @ts-ignore
-    const svg = template.replace( /\$\{(\w+)}/g, ( _, key ) => vars[key] );
+    };
+    const svg = template.replace( /\$\{(\w+)}/g, ( _, key ) => String( vars[key] ?? '' ) );
     const url = `data:image/svg+xml;utf8,${encodeURIComponent( svg )}`
 
     return new Style( {
@@ -345,11 +343,12 @@ export class IntegratedMap implements OnInit {
   }
 
   private getThemeColor( variable: string, lightColor: boolean ) {
-    const [, light, dark] = getComputedStyle( document.documentElement )
+    const match = getComputedStyle( document.documentElement )
       .getPropertyValue( variable )
       .trim()
-      .match( /light-dark\(([^,]+),\s*([^)]+)\)/ )!;
-
+      .match( /light-dark\(([^,]+),\s*([^)]+)\)/ );
+    if ( !match ) return '';
+    const [, light, dark] = match;
     return lightColor ? light : dark;
   }
 
@@ -379,10 +378,11 @@ export class IntegratedMap implements OnInit {
 
   private zoomToCurrentPosition() {
     const untrackedPosition = untracked( () => this.position() );
+    if ( !untrackedPosition ) return;
     this.view.animate( {
-      center: [untrackedPosition![0], untrackedPosition![1]],
+      center: untrackedPosition,
       zoom: 18,
       duration: 500
-    } )
+    } );
   }
 }

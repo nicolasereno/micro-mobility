@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {BottomSheetState} from '../../services/bottom-sheet-state';
 import {BusStop, NearBusStop} from '../../model/model';

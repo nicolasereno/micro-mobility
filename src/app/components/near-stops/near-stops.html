@@ -18,7 +18,7 @@
         <h4>
           <p>{{ nearStop.stop.stopId }} - {{ nearStop.stop.description }} ({{ nearStop.distance }}m)</p>
           <button matIconButton i18n-aria-label aria-label="Go to bus stop wait times"
-                  (click)="openStop(nearStop.stop)" (keydown)="openStop(nearStop.stop)">
+                  (click)="openStop(nearStop.stop)">
             <mat-icon>access_time</mat-icon>
           </button>
         </h4>

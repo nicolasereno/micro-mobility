@@ -41,7 +41,7 @@ export const busesReducer = createReducer(
   }) ),
   on( BusesActions.addPreferredStop, ( state, {stop} ) => ({
     ...state,
-    preferredStops: [...state.preferredStops.filter( sc => sc.stopId !== stop.stopId && sc.stopId! ), stop]
+    preferredStops: [...state.preferredStops.filter( sc => sc.stopId !== stop.stopId ), stop]
   }) ),
   on( BusesActions.removePreferredStop, ( state, {stopId} ) => ({
     ...state,

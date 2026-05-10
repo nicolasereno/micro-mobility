@@ -2,12 +2,15 @@
   <mat-card-header class="stop-card-header">
     <div mat-card-avatar>
       <mat-icon
-        i18n-aria-label
-        aria-label="Bus stop"
         class="card-header-icon"
         [svgIcon]="'vehicle-types:bus'"
+        role="button"
+        tabindex="0"
+        i18n-aria-label
+        aria-label="Reload bus times"
         (click)="reloadData()"
-        (keydown)="reloadData()">
+        (keydown.enter)="reloadData()"
+        (keydown.space)="reloadData()">
       </mat-icon>
     </div>
     <div class="header-text">
@@ -22,8 +25,7 @@
       i18n-aria-label
       aria-label="Toggle preferred"
       [class]="(isPreferred() ? ' preferred-stop' : '')"
-      (click)="togglePreferred(stop()!)"
-      (keydown)="togglePreferred(stop()!)">
+      (click)="togglePreferred(stop()!)">
       <mat-icon>star</mat-icon>
     </button>
   </mat-card-header>
@@ -33,7 +35,7 @@
         <hr>
         <h4>
           {{ time.routeIdentifier }} > {{ time.directionDescription }}
-          @if (time.minutes == 0) {
+          @if (time.minutes === 0) {
             <span i18n>Now</span>
           } @else {
             <span i18n>{{ time.minutes }} min</span>

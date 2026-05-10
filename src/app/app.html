@@ -28,8 +28,7 @@
   @for (vehicleType of VEHICLE_TYPES; track vehicleType) {
     <mat-button-toggle [checked]="vehicleTypesVisible()[vehicleType]"
                        [value]="vehicleType"
-                       (click)="toggleVehicleType(vehicleType)"
-                       (keydown)="toggleVehicleType(vehicleType)" checked>
+                       (click)="toggleVehicleType(vehicleType)" checked>
       <mat-icon [svgIcon]="'vehicle-types:' + vehicleType"></mat-icon>
     </mat-button-toggle>
   }
@@ -47,7 +46,6 @@
   @for (operator of SHARING_OPERATORS; track operator) {
     <mat-button-toggle [value]="operator"
                        (click)="toggleOperator(operator)"
-                       (keydown)="toggleOperator(operator)"
                        [checked]="operatorsVisible()[operator]">
       <mat-icon [svgIcon]="'operators:' + operator"></mat-icon>
       @if (operatorsError() && operatorsError()[ operator ]) {

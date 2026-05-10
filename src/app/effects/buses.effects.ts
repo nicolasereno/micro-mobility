@@ -36,7 +36,10 @@ export class BusesEffects {
           map( info => BusesActions.loadBusesSuccess( {
             stop: action.stop,
             times: info
-          } ) )
+          } ) ),
+          catchError( () => of( BusesActions.loadBusesFailure( {
+            error: ''
+          } ) ) )
         )
       )
     )

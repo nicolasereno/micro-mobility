@@ -53,7 +53,8 @@ export function storageMetaReducer(
       if ( stored ) {
         try {
           return {...state ?? {}, ...JSON.parse( stored )};
-        } catch {
+        } catch ( e ) {
+          console.warn( 'Failed to restore persisted state:', e );
         }
       }
     }

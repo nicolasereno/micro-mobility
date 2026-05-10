@@ -13,9 +13,9 @@ export class GeneralBikeShareFeed {
 
   public loadOperatorVehicles( operator: SharingOperator ) {
 
-    return this.http.get<any>( GBFS_URLS[operator] ).pipe(
+    return this.http.get<GBFSIndexResponse>( GBFS_URLS[operator] ).pipe(
       // 1️ extract feeds
-      map( res => res.data.en.feeds as Feed[] ),
+      map( res => res.data.en.feeds ),
 
       // 2️ extract needed feed URLs
       map( feeds => ({
@@ -26,15 +26,15 @@ export class GeneralBikeShareFeed {
       // 3 fetch both feeds in parallel
       concatMap( ( {bikesFeed, vehicleTypesFeed} ) =>
         forkJoin( {
-          bikesRes: this.http.get<any>( bikesFeed.url ),
-          vehicleTypesRes: this.http.get<any>( vehicleTypesFeed.url )
+          bikesRes: this.http.get<BikeStatusResponse>( bikesFeed.url ),
+          vehicleTypesRes: this.http.get<VehicleTypesResponse>( vehicleTypesFeed.url )
         } )
       ),
 
       // 4 join bikes with vehicle types
       map( ( {bikesRes, vehicleTypesRes} ) => {
-        const bikes = bikesRes.data.bikes as VehicleFromFeed[];
-        const vehicleTypes = vehicleTypesRes.data.vehicle_types as VehicleTypeFromFeed[];
+        const bikes = bikesRes.data.bikes;
+        const vehicleTypes = vehicleTypesRes.data.vehicle_types;
 
         // Build lookup map for O(1) joins
         const vehicleTypeMap = new Map(
@@ -56,6 +56,18 @@ export class GeneralBikeShareFeed {
       } )
     );
   }
+}
+
+interface GBFSIndexResponse {
+  data: { en: { feeds: Feed[] } };
+}
+
+interface BikeStatusResponse {
+  data: { bikes: VehicleFromFeed[] };
+}
+
+interface VehicleTypesResponse {
+  data: { vehicle_types: VehicleTypeFromFeed[] };
 }
 
 interface Feed {

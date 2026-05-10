@@ -6,7 +6,6 @@ import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {Store} from '@ngrx/store';
 import {followGps, minimumCharge, minimumDistance, theme} from '../../reducers';
 import {SettingsActions} from '../../actions/settings.actions';
-import {ThemeService} from '../../services/theme-service';
 
 @Component( {
   selector: 'app-settings',
@@ -28,7 +27,6 @@ import {ThemeService} from '../../services/theme-service';
 export class Settings {
 
   private readonly store = inject( Store );
-  private readonly themeService = inject( ThemeService );
 
   protected readonly minimumCharge = this.store.selectSignal<number>( minimumCharge );
   protected readonly minimumDistance = this.store.selectSignal<number>( minimumDistance );

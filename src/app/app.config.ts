@@ -1,4 +1,12 @@
-import {ApplicationConfig, DOCUMENT, ErrorHandler, inject, isDevMode, provideBrowserGlobalErrorListeners} from '@angular/core';
+import {
+  ApplicationConfig,
+  DOCUMENT,
+  ErrorHandler,
+  inject,
+  isDevMode,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection
+} from '@angular/core';
 import {provideStore} from '@ngrx/store';
 import {metaReducers, reducers} from './reducers';
 import {provideStoreDevtools} from '@ngrx/store-devtools';
@@ -15,39 +23,40 @@ import {DomSanitizer} from '@angular/platform-browser';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideHttpClient(),
-    provideStore( reducers, {metaReducers} ),
-    provideStoreDevtools( {maxAge: 25, logOnly: !isDevMode()} ),
-    provideEffects( VehiclesEffects, MapsEffects, BusesEffects ),
-    provideServiceWorker( 'ngsw-worker.js', {
+    provideStore(reducers, {metaReducers}),
+    provideStoreDevtools({maxAge: 25, logOnly: !isDevMode()}),
+    provideEffects(VehiclesEffects, MapsEffects, BusesEffects),
+    provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000'
-    } ),
-    provideMatIconRegistry()
+    }),
+    provideMatIconRegistry(),
   ]
 };
 
 export function provideMatIconRegistry() {
   return {
     provide: MatIconRegistry, useFactory: () => {
-      const http = inject( HttpClient );
-      const sanitizer = inject( DomSanitizer );
-      const document = inject( DOCUMENT );
-      const errorHandler = inject( ErrorHandler );
+      const http = inject(HttpClient);
+      const sanitizer = inject(DomSanitizer);
+      const document = inject(DOCUMENT);
+      const errorHandler = inject(ErrorHandler);
 
-      const iconRegistry = new MatIconRegistry( http, sanitizer, document, errorHandler );
+      const iconRegistry = new MatIconRegistry(http, sanitizer, document, errorHandler);
 
       iconRegistry.addSvgIconSetInNamespace(
         'operators',
-        sanitizer.bypassSecurityTrustResourceUrl( 'icons/operators.svg' )
+        sanitizer.bypassSecurityTrustResourceUrl('icons/operators.svg')
       );
       iconRegistry.addSvgIconSetInNamespace(
         'vehicle-types',
-        sanitizer.bypassSecurityTrustResourceUrl( 'icons/vehicle-types.svg' )
+        sanitizer.bypassSecurityTrustResourceUrl('icons/vehicle-types.svg')
       );
       iconRegistry.addSvgIconSetInNamespace(
         'symbols',
-        sanitizer.bypassSecurityTrustResourceUrl( 'icons/symbols.svg' )
+        sanitizer.bypassSecurityTrustResourceUrl('icons/symbols.svg')
       );
 
       return iconRegistry;

@@ -3,16 +3,28 @@ import {IntegratedMap} from './components/map/integrated-map';
 import {Store} from '@ngrx/store';
 import {MapsActions} from './actions/maps.actions';
 import {
-  busWaitTimes, nearStops,
+  busWaitTimes,
+  nearStops,
   operatorsError,
-  operatorsVisible, position,
+  operatorsVisible,
+  position,
   positionAvailable,
+  positionTimestamp,
   preferredStops,
   selectedVehicle,
   theme,
   vehicleTypesVisible
 } from './reducers';
-import {BusStop, BusTimesInfo, NearBusStop, SHARING_OPERATORS, SharingOperator, Vehicle, VEHICLE_TYPES, VehicleType} from './model/model';
+import {
+  BusStop,
+  BusTimesInfo,
+  NearBusStop,
+  SHARING_OPERATORS,
+  SharingOperator,
+  Vehicle,
+  VEHICLE_TYPES,
+  VehicleType
+} from './model/model';
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatMiniFabButton} from '@angular/material/button';
@@ -31,75 +43,85 @@ import {Coordinate} from 'ol/coordinate';
 import {toLonLat} from 'ol/proj';
 import {NearStops} from './components/near-stops/near-stops';
 
-@Component( {
+@Component({
   selector: 'app-root',
   imports: [IntegratedMap, MatIcon, MatButtonToggleGroup, MatButtonToggle, MatMiniFabButton, MatBadge],
   templateUrl: './app.html',
   standalone: true,
   styleUrl: './app.scss'
-} )
+})
 export class App implements OnInit {
 
   protected readonly VEHICLE_TYPES = VEHICLE_TYPES;
   protected readonly SHARING_OPERATORS = SHARING_OPERATORS;
 
-  private readonly store = inject( Store );
-  private readonly bottomSheetState = inject( BottomSheetState );
-  private readonly themeService = inject( ThemeService );
+  private readonly store = inject(Store);
+  private readonly bottomSheetState = inject(BottomSheetState);
+  private readonly themeService = inject(ThemeService);
 
-  protected readonly positionAvailable = this.store.selectSignal<boolean>( positionAvailable );
-  protected readonly position = this.store.selectSignal<Coordinate | undefined>( position );
-  protected readonly busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>( busWaitTimes )
-  protected readonly selectedVehicle = this.store.selectSignal<Vehicle | undefined>( selectedVehicle )
-  protected readonly operatorsError = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsError );
-  protected readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible );
-  protected readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
-  protected readonly preferredStops = this.store.selectSignal<BusStop[]>( preferredStops );
-  protected readonly nearBusStops = this.store.selectSignal<NearBusStop[] | undefined>( nearStops );
-  private readonly theme = this.store.selectSignal<'light' | 'dark'>( theme );
+  protected readonly positionAvailable = this.store.selectSignal<boolean>(positionAvailable);
+  protected readonly position = this.store.selectSignal<Coordinate | undefined>(position);
+  protected readonly positionTimestamp = this.store.selectSignal<Date | undefined>(positionTimestamp);
+  protected readonly busWaitTimes = this.store.selectSignal<BusTimesInfo[] | undefined>(busWaitTimes)
+  protected readonly selectedVehicle = this.store.selectSignal<Vehicle | undefined>(selectedVehicle)
+  protected readonly operatorsError = this.store.selectSignal<Record<SharingOperator, boolean>>(operatorsError);
+  protected readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>(vehicleTypesVisible);
+  protected readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>(operatorsVisible);
+  protected readonly preferredStops = this.store.selectSignal<BusStop[]>(preferredStops);
+  protected readonly nearBusStops = this.store.selectSignal<NearBusStop[] | undefined>(nearStops);
+  private readonly theme = this.store.selectSignal<'light' | 'dark'>(theme);
 
   private readonly visibility = toSignal(
-    fromEvent( document, 'visibilitychange' )
+    fromEvent(document, 'visibilitychange')
       .pipe(
-        map( () => document.visibilityState === 'visible' ) ),
+        map(() => document.visibilityState === 'visible')),
     {initialValue: true}
   );
 
   constructor() {
-    effect( () => {
-      this.themeService.setTheme( this.theme() );
-    } );
-    effect( () => {
-      if ( !this.bottomSheetState.isOpen() ) {
-        this.store.dispatch( BusesActions.clearBuses() );
-        this.store.dispatch( VehiclesActions.unselectVehicle() );
+    effect(() => {
+      this.themeService.setTheme(this.theme());
+    });
+    effect(() => {
+      if (!this.bottomSheetState.isOpen()) {
+        this.store.dispatch(BusesActions.clearBuses());
+        this.store.dispatch(VehiclesActions.unselectVehicle());
       }
-    } );
-    effect( () => {
-      if ( this.busWaitTimes() && !this.bottomSheetState.isOpen() ) {
-        this.bottomSheetState.open( BusWaitTime );
+    });
+    effect(() => {
+      if (this.busWaitTimes() && !this.bottomSheetState.isOpen()) {
+        this.bottomSheetState.open(BusWaitTime);
       }
-    } );
-    effect( () => {
-      if ( this.selectedVehicle() && !this.bottomSheetState.isOpen() ) {
-        this.bottomSheetState.open( VehicleDetail );
+    });
+    effect(() => {
+      if (this.selectedVehicle() && !this.bottomSheetState.isOpen()) {
+        this.bottomSheetState.open(VehicleDetail);
       }
-    } );
-    effect( () => {
-      if ( this.nearBusStops() !== undefined ) {
-        this.bottomSheetState.open( NearStops );
+    });
+    effect(() => {
+      if (this.nearBusStops() !== undefined) {
+        this.bottomSheetState.open(NearStops);
       }
-    } );
-    interval( 2.5 * 1000 )
+    });
+    const gpsRefreshPeriod = 2.5 * 1000;
+    // Retrieve current position
+    interval(gpsRefreshPeriod)
       .pipe(
         takeUntilDestroyed(),
-        filter( () => this.visibility() ) )
-      .subscribe( () => this.getGPSPosition() );
-    interval( 2 * 60 * 1000 )
+        filter(() => this.visibility()))
+      .subscribe(() => this.getGPSPosition());
+    // Reload
+    interval(2 * 60 * 1000)
       .pipe(
         takeUntilDestroyed(),
-        filter( () => this.visibility() ) )
-      .subscribe( () => this.reloadData() );
+        filter(() => this.visibility()))
+      .subscribe(() => this.reloadData());
+    // Reset old positions
+    interval(0.5 * 1000)
+      .pipe(
+        takeUntilDestroyed(),
+        filter(() => this.visibility()))
+      .subscribe(() => this.checkAndResetGPSPosition(gpsRefreshPeriod));
   }
 
   ngOnInit() {
@@ -108,37 +130,47 @@ export class App implements OnInit {
   }
 
   protected openSettings() {
-    this.bottomSheetState.open( Settings );
+    this.bottomSheetState.open(Settings);
   }
 
   private getGPSPosition() {
-    this.store.dispatch( MapsActions.getGPSPosition() );
+    this.store.dispatch(MapsActions.getGPSPosition());
+  }
+
+  private checkAndResetGPSPosition(gpsRefreshPeriod: number) {
+    if (this.positionTimestamp()) {
+      const gpsTime = this.positionTimestamp()!.getTime();
+      const currentTime = new Date().getTime();
+      if ((currentTime - gpsTime) >= 3 * gpsRefreshPeriod) {
+        this.store.dispatch(MapsActions.resetGPSPosition());
+      }
+    }
   }
 
   protected reloadData() {
-    for ( const operator of SHARING_OPERATORS ) {
-      this.store.dispatch( VehiclesActions.loadVehicles( {operator} ) );
+    for (const operator of SHARING_OPERATORS) {
+      this.store.dispatch(VehiclesActions.loadVehicles({operator}));
     }
   }
 
   protected zoomToPosition() {
-    this.store.dispatch( MapsActions.zoomToPosition() );
+    this.store.dispatch(MapsActions.zoomToPosition());
   }
 
-  protected toggleVehicleType( vehicleType: VehicleType ) {
-    this.store.dispatch( MapsActions.toggleVehicleType( {vehicleType} ) );
+  protected toggleVehicleType(vehicleType: VehicleType) {
+    this.store.dispatch(MapsActions.toggleVehicleType({vehicleType}));
   }
 
-  protected toggleOperator( operator: SharingOperator ) {
-    this.store.dispatch( VehiclesActions.toggleOperator( {operator} ) )
+  protected toggleOperator(operator: SharingOperator) {
+    this.store.dispatch(VehiclesActions.toggleOperator({operator}))
   }
 
   protected openPreferredStops() {
-    this.bottomSheetState.open( PreferredStops );
+    this.bottomSheetState.open(PreferredStops);
   }
 
   protected searchNearStops() {
     const lonLat = toLonLat(this.position()!);
-    this.store.dispatch( BusesActions.loadNearBusStops({lon: lonLat[0], lat: lonLat[1]}) );
+    this.store.dispatch(BusesActions.loadNearBusStops({lon: lonLat[0], lat: lonLat[1]}));
   }
 }

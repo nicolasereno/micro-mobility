@@ -10,6 +10,7 @@ export interface MapsState {
   center: Coordinate;
   zoom: number;
   position: Coordinate | undefined;
+  positionTimestamp: Date | undefined;
   accuracy: number | undefined;
   vehicleTypesVisible: Record<VehicleType, boolean>;
   zoomToPositionTime: number | undefined;
@@ -19,6 +20,7 @@ export const initialState: MapsState = {
   center: fromLonLat( [12.49637, 41.90278] ),
   zoom: 12,
   position: undefined,
+  positionTimestamp: undefined,
   accuracy: undefined,
   vehicleTypesVisible: {bicycle: true, scooter: true},
   zoomToPositionTime: undefined,
@@ -35,14 +37,21 @@ export const mapsReducer = createReducer(
     ...state,
     zoomToPositionTime: state.position ? new Date().getTime() : undefined,
   }) ),
-  on( MapsActions.getGPSPositionSuccess, ( state, {coordinates, accuracy} ) => ({
+  on( MapsActions.getGPSPositionSuccess, ( state, {coordinates, accuracy, timestamp} ) => ({
     ...state,
     position: coordinates,
     accuracy: accuracy,
+    positionTimestamp: timestamp,
   }) ),
   on( MapsActions.toggleVehicleType, ( state, {vehicleType} ) => ({
     ...state,
     vehicleTypesVisible: {...state.vehicleTypesVisible, [vehicleType]: !state.vehicleTypesVisible[vehicleType]},
+  }) ),
+  on( MapsActions.resetGPSPosition, ( state, {} ) => ({
+    ...state,
+    position: undefined,
+    accuracy: undefined,
+    positionTimestamp: undefined
   }) ),
 );
 

@@ -19,6 +19,7 @@ export const reducers: ActionReducerMap<AppState> = {
 };
 
 export const position = ( state: AppState ) => state[mapsFeatureKey].position;
+export const positionTimestamp = ( state: AppState ) => state[mapsFeatureKey].positionTimestamp;
 export const positionAvailable = ( state: AppState ) => state[mapsFeatureKey].position !== undefined;
 export const accuracy = ( state: AppState ) => state[mapsFeatureKey].accuracy;
 export const zoomToPositionTime = ( state: AppState ) => state[mapsFeatureKey].zoomToPositionTime;

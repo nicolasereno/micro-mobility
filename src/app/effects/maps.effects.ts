@@ -20,13 +20,18 @@ export class MapsEffects {
               observer.next( position );
               observer.complete();
             },
-            error => observer.error( error )
+            error => observer.error( error ),
+            {
+              timeout: 5 * 1000,
+              maximumAge: 20 * 1000,
+            }
           );
         } ).pipe(
           map( position =>
             MapsActions.getGPSPositionSuccess( {
               coordinates: fromLonLat( [position.coords.longitude, position.coords.latitude] ),
-              accuracy: position.coords.accuracy
+              accuracy: position.coords.accuracy,
+              timestamp: new Date()
             } )
           ),
           catchError( () =>

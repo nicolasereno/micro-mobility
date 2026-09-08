@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {GBFS_URLS, SharingOperator, Vehicle, VehicleType} from '../model/model';
+import {GBFS_ADD, GBFS_REMOVE, GBFS_URLS, SharingOperator, Vehicle, VehicleType} from '../model/model';
 import {concatMap, forkJoin, map} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {fromLonLat} from 'ol/proj';
@@ -13,7 +13,7 @@ export class GeneralBikeShareFeed {
 
   public loadOperatorVehicles( operator: SharingOperator ) {
 
-    return this.http.get<GBFSIndexResponse>( GBFS_URLS[operator] ).pipe(
+    return this.http.get<GBFSIndexResponse>( GBFS_URLS[operator].replace( GBFS_REMOVE[operator], GBFS_ADD[operator] ) ).pipe(
       // 1️ extract feeds
       map( res => res.data.en.feeds ),
 
@@ -26,8 +26,8 @@ export class GeneralBikeShareFeed {
       // 3 fetch both feeds in parallel
       concatMap( ( {bikesFeed, vehicleTypesFeed} ) =>
         forkJoin( {
-          bikesRes: this.http.get<BikeStatusResponse>( bikesFeed.url ),
-          vehicleTypesRes: this.http.get<VehicleTypesResponse>( vehicleTypesFeed.url )
+          bikesRes: this.http.get<BikeStatusResponse>( bikesFeed.url.replace( GBFS_REMOVE[operator], GBFS_ADD[operator] ) ),
+          vehicleTypesRes: this.http.get<VehicleTypesResponse>( vehicleTypesFeed.url.replace( GBFS_REMOVE[operator], GBFS_ADD[operator] ) )
         } )
       ),
 

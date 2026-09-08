@@ -14,6 +14,18 @@ export const GBFS_URLS: Record<SharingOperator, string> = {
   lime: 'https://data.lime.bike/api/partners/v2/gbfs/rome/gbfs.json'
 };
 
+export const GBFS_REMOVE: Record<SharingOperator, string> = {
+  dott: 'https://gbfs.api.ridedott.com/public/v2/',
+  bird: 'https://mds.bird.co/gbfs/v2/public/',
+  lime: 'https://data.lime.bike/api/partners/v2/gbfs/'
+};
+
+export const GBFS_ADD: Record<SharingOperator, string> = {
+  dott: '/gbfs/dott/',
+  bird: '/gbfs/bird/',
+  lime: '/gbfs/lime/'
+};
+
 export const PRIMARY_COLORS: Record<SharingOperator, string> = {
   lime: '#C0F008',
   bird: '#CED7E0',

@@ -13,7 +13,7 @@ export class BusStopTimes {
 
   public loadBusStopTimes( stopId: string, description: string ): Observable<BusStopTimesInfo> {
     return this.http
-      .get<BusTimesInfo[]>( `https://gtfs-rome.homelinuxserver.org/api/wait-times/${stopId}` )
+      .get<BusTimesInfo[]>( `/api/wait-times/${stopId}` )
       .pipe(
         retry( 3 ),
         map( result => ({
@@ -29,7 +29,7 @@ export class BusStopTimes {
         id: string;
         name: string;
         distanceMeters: number
-      }[]>( `https://gtfs-rome.homelinuxserver.org/api/gis/nearest-stops?lat=${lat}&lon=${lon}` )
+      }[]>( `/api/gis/nearest-stops?lat=${lat}&lon=${lon}` )
       .pipe(
         retry( 3 ),
         map( result => result.map( stop =>

@@ -11,6 +11,7 @@ import {
   minimumCharge,
   minimumDistance,
   operatorsVisible,
+  orientation,
   position,
   preferredStops,
   selectedVehicleId,
@@ -37,6 +38,7 @@ import {Circle, Geometry, Point} from 'ol/geom';
 import {MapsActions} from '../../actions/maps.actions';
 import {Coordinate} from 'ol/coordinate';
 import CircleStyle from 'ol/style/Circle';
+import RegularShape from 'ol/style/RegularShape';
 import {FeatureLike} from 'ol/Feature';
 import {GeoJSON} from 'ol/format';
 import Text from 'ol/style/Text';
@@ -77,6 +79,7 @@ export class IntegratedMap implements OnInit {
   private readonly zoom = this.store.selectSignal<number | undefined>( zoom );
   private readonly center = this.store.selectSignal<Coordinate | undefined>( center );
   private readonly accuracy = this.store.selectSignal<number | undefined>( accuracy );
+  private readonly orientation = this.store.selectSignal<number | undefined>( orientation );
   private readonly zoomToPositionTime = this.store.selectSignal<number | undefined>( zoomToPositionTime );
   private readonly vehicleTypesVisible = this.store.selectSignal<Record<VehicleType, boolean>>( vehicleTypesVisible );
   private readonly operatorsVisible = this.store.selectSignal<Record<SharingOperator, boolean>>( operatorsVisible );
@@ -352,20 +355,45 @@ export class IntegratedMap implements OnInit {
     return lightColor ? light : dark;
   }
 
-  private positionStyle() {
+  private positionStyle(): Style[] {
     const baseColor = this.getThemeColor( '--mat-sys-tertiary', true );
-    return new Style( {
-      image: new CircleStyle( {
-        radius: 4,
-        fill: new Fill( {
-          color: this.hexToRgba( baseColor, 0.8 ),
+    const styles = [
+      new Style( {
+        image: new CircleStyle( {
+          radius: 4,
+          fill: new Fill( {
+            color: this.hexToRgba( baseColor, 0.8 ),
+          } ),
+          stroke: new Stroke( {
+            color: baseColor,
+            width: 1,
+          } )
         } ),
-        stroke: new Stroke( {
-          color: baseColor,
-          width: 1,
-        } )
-      } ),
-    } );
+      } )
+    ];
+
+    const heading = this.orientation();
+    if ( heading !== undefined ) {
+      styles.push( new Style( {
+        image: new RegularShape( {
+          points: 3,
+          radius: 4,
+          angle: 0,
+          rotation: heading * Math.PI / 180,
+          rotateWithView: true,
+          displacement: [0, 9],
+          fill: new Fill( {
+            color: this.hexToRgba( baseColor, 0.9 ),
+          } ),
+          stroke: new Stroke( {
+            color: baseColor,
+            width: 1,
+          } )
+        } ),
+      } ) );
+    }
+
+    return styles;
   }
 
   private hexToRgba( hex: string, alpha: number ) {

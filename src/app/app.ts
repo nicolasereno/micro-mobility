@@ -28,8 +28,8 @@ import {
 import {VehiclesActions} from './actions/vehicles.actions';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatMiniFabButton} from '@angular/material/button';
-import {filter, fromEvent, interval, map} from 'rxjs';
-import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {filter, fromEvent, interval, map, switchMap} from 'rxjs';
+import {takeUntilDestroyed, toObservable, toSignal} from '@angular/core/rxjs-interop';
 import {BusWaitTime} from './components/bus-wait-time/bus-wait-time';
 import {BottomSheetState} from './services/bottom-sheet-state';
 import {BusesActions} from './actions/buses.actions';
@@ -42,6 +42,7 @@ import {PreferredStops} from './components/preferred-stops/preferred-stops';
 import {Coordinate} from 'ol/coordinate';
 import {toLonLat} from 'ol/proj';
 import {NearStops} from './components/near-stops/near-stops';
+import {DevicePositioningService} from './services/device-positioning';
 
 @Component({
   selector: 'app-root',
@@ -58,6 +59,7 @@ export class App implements OnInit {
   private readonly store = inject(Store);
   private readonly bottomSheetState = inject(BottomSheetState);
   private readonly themeService = inject(ThemeService);
+  private readonly devicePositioningService = inject(DevicePositioningService);
 
   protected readonly positionAvailable = this.store.selectSignal<boolean>(positionAvailable);
   protected readonly position = this.store.selectSignal<Coordinate | undefined>(position);
@@ -110,6 +112,14 @@ export class App implements OnInit {
         takeUntilDestroyed(),
         filter(() => this.visibility()))
       .subscribe(() => this.getGPSPosition());
+    // Retrieve device orientation, once the device has provided one
+    toObservable(this.devicePositioningService.orientationAvailable)
+      .pipe(
+        filter(Boolean),
+        switchMap(() => interval(0.5 * 1000)),
+        takeUntilDestroyed(),
+        filter(() => this.visibility()))
+      .subscribe(() => this.getDeviceOrientation());
     // Reload
     interval(2 * 60 * 1000)
       .pipe(
@@ -135,6 +145,10 @@ export class App implements OnInit {
 
   private getGPSPosition() {
     this.store.dispatch(MapsActions.getGPSPosition());
+  }
+
+  private getDeviceOrientation() {
+    this.store.dispatch(MapsActions.getDeviceOrientation());
   }
 
   private checkAndResetGPSPosition(gpsRefreshPeriod: number) {

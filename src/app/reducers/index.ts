@@ -22,6 +22,7 @@ export const position = ( state: AppState ) => state[mapsFeatureKey].position;
 export const positionTimestamp = ( state: AppState ) => state[mapsFeatureKey].positionTimestamp;
 export const positionAvailable = ( state: AppState ) => state[mapsFeatureKey].position !== undefined;
 export const accuracy = ( state: AppState ) => state[mapsFeatureKey].accuracy;
+export const orientation = ( state: AppState ) => state[mapsFeatureKey].orientation;
 export const zoomToPositionTime = ( state: AppState ) => state[mapsFeatureKey].zoomToPositionTime;
 export const minimumCharge = ( state: AppState ) => state[settingsFeatureKey].minimumCharge;
 export const minimumDistance = ( state: AppState ) => state[settingsFeatureKey].minimumDistance;

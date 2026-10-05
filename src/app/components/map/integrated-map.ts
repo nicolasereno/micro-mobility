@@ -215,7 +215,7 @@ export class IntegratedMap implements OnInit {
     } );
     this.stopsLayer = new VectorLayer( {
       source: new VectorSource( {
-        url: 'https://gtfs-rome.homelinuxserver.org/api/gis/stops',
+        url: '/api/gis/stops',
         format: new GeoJSON(),
       } ),
       minZoom: 16,
